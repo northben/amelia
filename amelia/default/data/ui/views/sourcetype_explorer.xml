@@ -352,12 +352,18 @@
     </panel>
   </row>
   <row>
-    <panel depends="$operation_7$">
+    <panel>
       <title>7 - Event types</title>
-      <table>
+      <input type="text" token="eventtype_search" searchWhenChanged="true">
+        <label>Search</label>
+        <prefix></prefix>
+        <suffix></suffix>
+        <initialValue></initialValue>>
+      </input>
+      <table depends="$operation_7$">
         <search>
           <query>| rest /servicesNS/-/-/saved/eventtypes 
-| search eai:acl.app=$app|s$
+| search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
 | fields title search priority $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
