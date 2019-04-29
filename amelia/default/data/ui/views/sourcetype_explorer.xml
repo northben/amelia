@@ -358,7 +358,7 @@
         <label>Search</label>
         <prefix></prefix>
         <suffix></suffix>
-        <initialValue></initialValue>>
+        <initialValue></initialValue>
       </input>
       <table depends="$operation_7$">
         <search>
