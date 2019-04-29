@@ -36,11 +36,15 @@
       <choice value="*">All</choice>
       <default>*</default>
     </input>
-    <input type="checkbox" token="fieldz">
+    <input type="multiselect" token="fieldz">
       <label>Show metadata</label>
       <choice value="">none</choice>
-      <choice value="eai:*">Permissions (eai:*)</choice>
-      <choice value="updated">Updated Date</choice>
+      <choice value="eai:acl.perms.*">Permissions (eai:acl.perms.*)</choice>
+      <choice value="updated">Date Updated</choice>
+      <choice value="eai:acl.app">App (eai:acl.app)</choice>
+      <choice value="eai:acl.owner">Owner (eai:acl.owner)</choice>
+      <choice value="eai:acl.sharing">Sharing (eai:acl.sharing)</choice>
+      <choice value="eai:acl.removable">Removable (eai:acl.removable)</choice>
       <default></default>
       <prefix> </prefix>
       <delimiter> </delimiter>
