@@ -1,0 +1,77 @@
+<form>
+  <search id="base">
+    <query>
+      | tstats min(_time) as first_event max(_time) as last_event count where index=* by index sourcetype
+      | search NOT index IN(assetsummary, cim_modactions, csvsummary, endpoint_summary, firedalerts, notable, risk, summary, threat_activity)
+      | lookup amelia_data_dictionary_lookup.csv sourcetype
+    </query>
+    <earliest>$field1.earliest$</earliest>
+    <latest>$field1.latest$</latest>
+  </search>
+  <label>Data Dictionary Explorer</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="field1">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="index" searchWhenChanged="true">
+      <label>Index</label>
+      <fieldForLabel>my_label</fieldForLabel>
+      <fieldForValue>index</fieldForValue>
+      <search base="base">
+        <query>
+          | dedup index
+          | eval my_label=index + " (" + count + ")"
+        </query>
+      </search>
+      <choice value="*">All</choice>
+      <default>*</default>
+    </input>
+    <input type="text" token="search">
+      <label>Search</label>
+      <initialValue></initialValue>
+    </input>
+    <input type="dropdown" token="owner" searchWhenChanged="true">
+      <label>Owner</label>
+      <choice value="">All</choice>
+      <fieldForLabel>owner</fieldForLabel>
+      <fieldForValue>owner</fieldForValue>
+      <search base="base">
+        <query>
+          | dedup owner
+        </query>
+      </search>
+      <default></default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        This dashboard provides customizable metadata about Splunk events. Additional information is provided by the <a href="https://localhost:8000/en-US/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=search&amp;lookup=amelia_data_dictionary_lookup.csv&amp;type=csv" target="_blank">Amelia Data Dictionary Lookup</a>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search base="base">
+          <query>| search index=$index$
+            | where if("$search$"!="",like(lower(description),lower("%$search$%")),true())
+            | where if("$owner$"!="",owner=="$owner$",true())
+            | convert ctime(*_event)</query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
