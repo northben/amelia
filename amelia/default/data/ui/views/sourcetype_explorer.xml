@@ -1,7 +1,7 @@
 <form>
   <search id="selection_base">
-    <query>| rest /servicesNS/-/-/saved/sourcetypes/ 
-| fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION* 
+    <query>| rest /servicesNS/-/-/saved/sourcetypes/
+| fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
 | stats count by eai:acl.app title</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
@@ -31,7 +31,7 @@
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/apps/local | stats count by title</query> 
+        <query>| rest /servicesNS/-/-/apps/local | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
@@ -52,7 +52,7 @@
   </fieldset>
   <row>
     <panel>
-      <html>Read <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a>
+      <html>This dashboard does not show index-time field configurations. <p>Read the official doc: <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a></p>
       </html>
     </panel>
   </row>
@@ -102,7 +102,7 @@
           <progress>
             <unset token="transform_stanza"></unset>
           </progress>
-          <query>| rest /servicesNS/-/-/data/props/extractions/ 
+          <query>| rest /servicesNS/-/-/data/props/extractions/
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
 | fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"</query>
           <earliest>-24h@h</earliest>
@@ -124,9 +124,9 @@
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
-        
-        
-        
+
+
+
         <drilldown>
           <condition match="$click.value2$ == $transform_stanza$">
             <unset token="transform_stanza"></unset>
@@ -137,8 +137,8 @@
           <condition field="attribute"></condition>
           <condition field="type"></condition>
         </drilldown>
-        
-        
+
+
       </table>
     </panel>
     <panel depends="$transform_stanza$">
@@ -146,8 +146,8 @@
       <table>
         <title>$transform_stanza$</title>
         <search>
-          <query>| rest /servicesNS/-/-/data/transforms/extractions/ 
-| search eai:acl.app=$app|s$ title=$transform_stanza|s$ 
+          <query>| rest /servicesNS/-/-/data/transforms/extractions/
+| search eai:acl.app=$app|s$ title=$transform_stanza|s$
 | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
 | transpose
 | search "row 1"!=""
@@ -181,10 +181,10 @@
       <title>3 - Automatic key-value field extraction</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/properties/props/$props_stanza|u$/ 
-| search title=*KV* 
-| eval url=replace(id,".*?(/servicesNS.*)", "\1") 
-| map search="| rest $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" " 
+          <query>| rest /servicesNS/-/-/properties/props/$props_stanza|u$/
+| search title=*KV*
+| eval url=replace(id,".*?(/servicesNS.*)", "\1")
+| map search="| rest $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
 | fields title value $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -215,9 +215,9 @@
       <title>4 - Field aliasing</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/data/props/fieldaliases 
-| search eai:acl.app=$app|s$ stanza=$props_stanza|s$ 
-| fields - alias.* 
+          <query>| rest /servicesNS/-/-/data/props/fieldaliases
+| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+| fields - alias.*
 | fields attribute value $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -256,9 +256,9 @@
       <title>5 - Calculated fields</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/data/props/calcfields 
+          <query>| rest /servicesNS/-/-/data/props/calcfields
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
-| fields - alias.* 
+| fields - alias.*
 | fields attribute value $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -299,7 +299,7 @@
         <search>
           <query>| rest /servicesNS/-/-/data/props/lookups
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
-| fields - alias.* 
+| fields - alias.*
 | fields attribute value transform $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -338,7 +338,7 @@
         <title>$lookup_stanza$</title>
         <search>
           <query>| rest /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
-| search eai:acl.app=$app|s$ 
+| search eai:acl.app=$app|s$
 | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DEPTH_LIMIT DEST_KEY FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX SOURCE_KEY WRITE_META author disabled fields_array fields_list filename id published splunk_server title type $fieldz$ | transpose</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -366,7 +366,7 @@
       </input>
       <table depends="$operation_7$">
         <search>
-          <query>| rest /servicesNS/-/-/saved/eventtypes 
+          <query>| rest /servicesNS/-/-/saved/eventtypes
 | search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
 | fields title search priority $fieldz$</query>
           <earliest>-24h@h</earliest>
@@ -392,7 +392,7 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
         <drilldown>
-          
+
           <condition match="$row.title$ == $eventtype_stanza$">
             <unset token="eventtype_stanza"></unset>
           </condition>
@@ -409,7 +409,7 @@
       <table>
         <title>$eventtype_stanza$</title>
         <search>
-          <query>| rest /servicesNS/-/-/saved/fvtags 
+          <query>| rest /servicesNS/-/-/saved/fvtags
 | search eai:acl.app=$app|s$ title="eventtype=$eventtype_stanza$"
 | fields title tags $fieldz$</query>
           <earliest>-24h@h</earliest>
@@ -448,7 +448,7 @@
         <fieldForLabel>tags</fieldForLabel>
         <fieldForValue>tags</fieldForValue>
         <search>
-          <query>| rest /servicesNS/-/-/saved/fvtags 
+          <query>| rest /servicesNS/-/-/saved/fvtags
 | search eai:acl.app=$app|s$
 | fields title tags $fieldz$
 | stats values(tags) as tags
@@ -468,7 +468,7 @@
       <table>
         <title>$tags$</title>
         <search>
-          <query>| rest /servicesNS/-/-/saved/fvtags 
+          <query>| rest /servicesNS/-/-/saved/fvtags
 | search eai:acl.app=$app|s$ $tags$
 | fields title tags $fieldz$</query>
           <earliest>-24h@h</earliest>
