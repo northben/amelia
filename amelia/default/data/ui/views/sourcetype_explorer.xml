@@ -1,6 +1,7 @@
 <form>
+
   <search id="selection_base">
-    <query>| rest /servicesNS/-/-/saved/sourcetypes/
+    <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
 | stats count by eai:acl.app title</query>
         <earliest>-24h@h</earliest>
@@ -8,12 +9,25 @@
   </search>
   <label>Sourcetype Explorer</label>
   <fieldset submitButton="false">
+        <input type="dropdown" searchWhenChanged="true" token="splunk_server">
+      <label>Search head instance</label>
+      <showClearButton>false</showClearButton>
+      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`
+      </populatingSearch>
+      <selectFirstChoice>true</selectFirstChoice>
+      <change>
+        <condition value="*">
+          <set token="host">$row.host$</set>
+        </condition>
+      </change>
+    </input>
+
     <input type="dropdown" token="props_stanza">
       <label>Props.conf Stanza</label>
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/properties/props | stats count by title</query>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
@@ -31,7 +45,7 @@
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/apps/local | stats count by title</query>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
@@ -61,7 +75,7 @@
       <title>1 - Inline field extraction (no field transform)</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/data/props/extractions/ | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=EXTRACT-* | fields attribute value $fieldz$</query>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/ | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=EXTRACT-* | fields attribute value $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -146,7 +160,7 @@
       <table>
         <title>$transform_stanza$</title>
         <search>
-          <query>| rest /servicesNS/-/-/data/transforms/extractions/
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/extractions/
 | search eai:acl.app=$app|s$ title=$transform_stanza|s$
 | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
 | transpose
@@ -181,7 +195,7 @@
       <title>3 - Automatic key-value field extraction</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/properties/props/$props_stanza|u$/
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props/$props_stanza|u$/
 | search title=*KV*
 | eval url=replace(id,".*?(/servicesNS.*)", "\1")
 | map search="| rest $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
@@ -215,7 +229,7 @@
       <title>4 - Field aliasing</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/data/props/fieldaliases
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/fieldaliases
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
 | fields - alias.*
 | fields attribute value $fieldz$</query>
@@ -256,7 +270,7 @@
       <title>5 - Calculated fields</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/data/props/calcfields
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/calcfields
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
 | fields - alias.*
 | fields attribute value $fieldz$</query>
@@ -297,7 +311,7 @@
       <title>6 - Lookups</title>
       <table>
         <search>
-          <query>| rest /servicesNS/-/-/data/props/lookups
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/lookups
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
 | fields - alias.*
 | fields attribute value transform $fieldz$</query>
@@ -337,7 +351,7 @@
       <table>
         <title>$lookup_stanza$</title>
         <search>
-          <query>| rest /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
 | search eai:acl.app=$app|s$
 | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DEPTH_LIMIT DEST_KEY FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX SOURCE_KEY WRITE_META author disabled fields_array fields_list filename id published splunk_server title type $fieldz$ | transpose</query>
           <earliest>-24h@h</earliest>
@@ -366,7 +380,7 @@
       </input>
       <table depends="$operation_7$">
         <search>
-          <query>| rest /servicesNS/-/-/saved/eventtypes
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/eventtypes
 | search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
 | fields title search priority $fieldz$</query>
           <earliest>-24h@h</earliest>
@@ -409,7 +423,7 @@
       <table>
         <title>$eventtype_stanza$</title>
         <search>
-          <query>| rest /servicesNS/-/-/saved/fvtags
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
 | search eai:acl.app=$app|s$ title="eventtype=$eventtype_stanza$"
 | fields title tags $fieldz$</query>
           <earliest>-24h@h</earliest>
@@ -448,7 +462,7 @@
         <fieldForLabel>tags</fieldForLabel>
         <fieldForValue>tags</fieldForValue>
         <search>
-          <query>| rest /servicesNS/-/-/saved/fvtags
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
 | search eai:acl.app=$app|s$
 | fields title tags $fieldz$
 | stats values(tags) as tags
@@ -468,7 +482,7 @@
       <table>
         <title>$tags$</title>
         <search>
-          <query>| rest /servicesNS/-/-/saved/fvtags
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
 | search eai:acl.app=$app|s$ $tags$
 | fields title tags $fieldz$</query>
           <earliest>-24h@h</earliest>
