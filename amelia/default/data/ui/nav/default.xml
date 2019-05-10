@@ -1,5 +1,6 @@
 <nav search_view="search">
   <view name="sourcetype_explorer" default='true'/>
+  <view name="saved_search_explorer"/>
   <view name="search"/>
   <view name="dashboards" />
 </nav>
