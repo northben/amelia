@@ -192,6 +192,7 @@
         <pre>machine 127.0.0.1
 login admin
 password changeme</pre>
+or change curl's "-n" to "-u my_username" to be prompted to authenticate to Spunk as "my_username" each time.
       </html>
     </panel>
   </row>
