@@ -162,6 +162,7 @@
         <search>
           <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/extractions/
 | search eai:acl.app=$app|s$ title=$transform_stanza|s$
+| fields - LOOKAHEAD WRITE_META
 | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
 | transpose
 | search "row 1"!=""
