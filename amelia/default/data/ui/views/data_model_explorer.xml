@@ -1,0 +1,71 @@
+<form>
+  <label>Data Model Explorer</label>
+  <fieldset>
+    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
+      <label>Search head instance</label>
+      <showClearButton>false</showClearButton>
+      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`</populatingSearch>
+      <selectFirstChoice>true</selectFirstChoice>
+      <change>
+        <condition value="*">
+          <set token="host">$row.host$</set>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="app">
+      <label>App</label>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | stats count by title</query>
+      </search>
+      <choice value="*">All</choice>
+      <default>*</default>
+    </input>
+    <input type="multiselect" token="fieldz">
+      <label>Show metadata</label>
+      <choice value="">none</choice>
+      <choice value="eai:acl.perms.*">Permissions (eai:acl.perms.*)</choice>
+      <choice value="updated">Date Updated</choice>
+      <choice value="eai:acl.app">App (eai:acl.app)</choice>
+      <choice value="eai:acl.owner">Owner (eai:acl.owner)</choice>
+      <choice value="eai:acl.sharing">Sharing (eai:acl.sharing)</choice>
+      <choice value="eai:acl.removable">Removable (eai:acl.removable)</choice>
+      <choice value="acceleration.*">Acceleration</choice>
+      <choice value="author">Author</choice>
+      <choice value="dataset.*">Dataset</choice>
+      <choice value="disabled">Disabled</choice>
+      <choice value="tags_whitelist">Tags Whitelist</choice>
+      <choice value="data.*">Data</choice>
+      <default>eai:acl.app,acceleration.*</default>
+      <prefix> </prefix>
+      <delimiter> </delimiter>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>| rest /servicesNS/-/-/data/models 
+| fields - acceleration.hunk* 
+| search eai:acl.app=$app|s$ 
+| fields title eai:data $fieldz$ 
+| spath input=eai:data path=objects{}.objectName 
+| spath input=eai:data path=objects{}.displayName
+| fields - eai:data</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
