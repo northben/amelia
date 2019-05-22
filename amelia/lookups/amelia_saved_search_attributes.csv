@@ -1,0 +1,9 @@
+label,query
+Enabled,disabled=0
+Disabled,disabled=1
+Scheduled,is_scheduled=1
+Accelerated,auto_summarize=1
+Realtime,realtime_schedule=1
+Summary Index,action.summary_index=1
+RT dispatch,dispatch.earliest_time=rt*
+Private,eai:acl.sharing=user

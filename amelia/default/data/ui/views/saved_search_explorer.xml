@@ -6,7 +6,7 @@
 | eval search_field=""
 | foreach *
     [ eval search_field=search_field + " " + coalesce('&lt;&lt;FIELD&gt;&gt;',"")]
-| search $app$ $disabled$ $scheduled$ $accelerated$ $search_field$ $realtime$ $scheduling$ $summary_index$</query>
+| search $app$ $include$ ($search_attributes$) $search_field$</query>
   </search>
   <fieldset submitButton="false">
       <input type="dropdown" searchWhenChanged="true" token="splunk_server">
@@ -29,7 +29,7 @@
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>eai:acl.app</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$ | search $disabled$ $scheduled$ $accelerated$ $realtime$ $scheduling$
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$ | search $search_attributes$
 | stats count by eai:acl.app
 | eval label='eai:acl.app'." (".count.")"</query>
         <earliest>-24h@h</earliest>
@@ -38,62 +38,21 @@
       <choice value="*">All apps</choice>
       <default>*</default>
     </input>
-    <input type="checkbox" token="disabled">
-      <label>Disabled?</label>
-      <choice value="0">Active</choice>
-      <choice value="1">Disabled</choice>
-      <default>0,1</default>
+    <input type="multiselect" token="search_attributes">
+      <label>Attributes</label>
+      <default>disabled=0</default>
       <delimiter> OR </delimiter>
-      <valuePrefix>disabled=</valuePrefix>
-    </input>
-    <input type="checkbox" token="scheduled">
-      <label>is_scheduled</label>
-      <choice value="1">1 - Yes</choice>
-      <choice value="0">0 - No</choice>
-      <default>1,0</default>
-      <delimiter> OR </delimiter>
-      <valuePrefix>is_scheduled=</valuePrefix>
-    </input>
-    <input type="checkbox" token="accelerated">
-      <label>auto_summarize</label>
-      <choice value="1">1 - Yes</choice>
-      <choice value="0">0 - No</choice>
-      <delimiter> OR </delimiter>
-      <valuePrefix>auto_summarize=</valuePrefix>
-      <default>1,0</default>
-    </input>
-    <input type="checkbox" token="realtime">
-      <label>dispatch.earliest_time</label>
-      <search>
-        <query>| makeresults count=2
-| streamstats count as value
-| eval label=value
-| replace 1 with "=rt*" 2 with "!=rt*" in value
-| replace 1 with "rt - real time" 2 with "historical" in label</query>
-        <earliest>-24h@h</earliest>
-        <latest>now</latest>
-      </search>
-      <valuePrefix>"dispatch.earliest_time"</valuePrefix>
-      <delimiter>  OR </delimiter>
-      <default>=rt*,!=rt*</default>
       <fieldForLabel>label</fieldForLabel>
-      <fieldForValue>value</fieldForValue>
+      <fieldForValue>query</fieldForValue>
+      <search>
+        <query>| inputlookup amelia_saved_search_attributes.csv</query>
+      </search>
     </input>
-    <input type="checkbox" token="scheduling">
-      <label>realtime_schedule</label>
-      <choice value="1">Real Time</choice>
-      <choice value="0">Continuous</choice>
-      <valuePrefix>realtime_schedule=</valuePrefix>
-      <default>1,0</default>
-      <delimiter> OR </delimiter>
-    </input>
-    <input type="checkbox" token="summary_index">
-      <label>action.summary_index</label>
-      <choice value="1">1</choice>
-      <choice value="0">0</choice>
-      <valuePrefix>action.summary_index=</valuePrefix>
-      <default>1,0</default>
-      <delimiter> OR </delimiter>
+    <input type="radio" token="include">
+      <label>Include these attributes?</label>
+      <choice value="">Include</choice>
+      <choice value="NOT">Exclude</choice>
+      <default></default>
     </input>
     <input type="multiselect" token="fieldz">
       <label>Fields</label>
@@ -117,6 +76,11 @@
       <default>*</default>
     </input>
   </fieldset>
+  <row>
+    <panel>
+      <html>Showing searches that $include$ match $search_attributes$</html>
+    </panel>
+  </row>
   <row>
     <panel>
       <single>
