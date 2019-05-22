@@ -63,7 +63,7 @@
       <fieldForValue>column</fieldForValue>
       <search>
         <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
-| head 1
+| head 1 | fields - display.* action.*
 | transpose</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
