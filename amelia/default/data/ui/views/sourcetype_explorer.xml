@@ -27,7 +27,7 @@
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props | stats count by title</query>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/$app$/properties/props | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
