@@ -83,54 +83,17 @@
   </row>
   <row>
     <panel>
-      <single>
-        <title>Scheduled</title>
+      <table>
+        <title>Count of searches by app and attributes</title>
         <search base="base">
-          <query>| stats count(eval(is_scheduled=1)) as is_scheduled</query>
+          <query>| foreach * 
+    [ eval all_fields=mvappend(all_fields,"&lt;&lt;FIELD&gt;&gt;=".'&lt;&lt;FIELD&gt;&gt;') ] 
+| lookup search_classification query as all_fields | search $search_attributes$ | chart count by eai:acl.app label
+| addcoltotals labelfield=eai:acl.app</query>
         </search>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
-      </single>
-    </panel>
-    <panel>
-      <single>
-        <title>Accelerated</title>
-        <search base="base">
-          <query>| stats count(eval(auto_summarize=1)) as auto_summarize</query>
-        </search>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">progressbar</option>
-      </single>
-    </panel>
-    <panel>
-      <single>
-        <title>Real Time Dispatch</title>
-        <search base="base">
-          <query>| stats count(eval(match('dispatch.earliest_time',"rt.*"))) as rt</query>
-        </search>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">progressbar</option>
-      </single>
-    </panel>
-    <panel>
-      <single>
-        <title>Continuous Scheduling</title>
-        <search base="base">
-          <query>| stats count(eval(match('realtime_schedule',"0"))) as rs</query>
-        </search>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">progressbar</option>
-      </single>
-    </panel>
-    <panel>
-      <single>
-        <title>Summary Indexing</title>
-        <search base="base">
-          <query>| stats count(eval(match('action.summary_index',"1"))) as si</query>
-        </search>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">progressbar</option>
-      </single>
+      </table>
     </panel>
   </row>
   <row>
