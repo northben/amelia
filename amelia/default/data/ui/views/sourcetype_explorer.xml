@@ -383,7 +383,7 @@
         <search>
           <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/eventtypes
 | search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
-| fields title search priority $fieldz$</query>
+| fields title disabled priority search $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
