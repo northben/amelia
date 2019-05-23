@@ -2,18 +2,17 @@
   <label>Saved Search Explorer</label>
   <search id="base">
     <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
-| $fieldz$ id disabled eai:acl.app is_scheduled dispatch.earliest_time auto_summarize realtime_schedule action.summary_index
+| fields - display.* action.*
 | eval search_field=""
 | foreach *
     [ eval search_field=search_field + " " + coalesce('&lt;&lt;FIELD&gt;&gt;',"")]
 | search $app$ $include$ ($search_attributes$) $search_field$</query>
   </search>
   <fieldset submitButton="false">
-      <input type="dropdown" searchWhenChanged="true" token="splunk_server">
+    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
       <label>Search head instance</label>
       <showClearButton>false</showClearButton>
-      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`
-      </populatingSearch>
+      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`</populatingSearch>
       <selectFirstChoice>true</selectFirstChoice>
       <change>
         <condition value="*">
@@ -88,7 +87,7 @@
         <search base="base">
           <query>| foreach * 
     [ eval all_fields=mvappend(all_fields,"&lt;&lt;FIELD&gt;&gt;=".'&lt;&lt;FIELD&gt;&gt;') ] 
-| lookup search_classification query as all_fields | search $search_attributes$ | chart count by eai:acl.app label
+| lookup amelia_saved_search_attributes.csv query as all_fields | search $search_attributes$ | chart count by eai:acl.app label
 | addcoltotals labelfield=eai:acl.app</query>
         </search>
         <option name="drilldown">none</option>
