@@ -6,7 +6,7 @@
 | eval search_field=""
 | foreach *
     [ eval search_field=search_field + " " + coalesce('&lt;&lt;FIELD&gt;&gt;',"")]
-| search $app$ $include$ ($search_attributes$) $search_field$</query>
+| search $app$ $search_attributes_string$ $search_field$</query>
   </search>
   <fieldset submitButton="false">
     <input type="dropdown" searchWhenChanged="true" token="splunk_server">
@@ -25,33 +25,64 @@
       <valuePrefix>eai:acl.app="</valuePrefix>
       <valueSuffix>"</valueSuffix>
       <delimiter> OR </delimiter>
-      <fieldForLabel>label</fieldForLabel>
+      <fieldForLabel>eai:acl.app</fieldForLabel>
       <fieldForValue>eai:acl.app</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$ | search $search_attributes$
-| stats count by eai:acl.app
-| eval label='eai:acl.app'." (".count.")"</query>
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$ | search $search_attributes_string$
+| stats count by eai:acl.app</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
       </search>
       <choice value="*">All apps</choice>
-      <default>*</default>
+      <initialValue>*</initialValue>
     </input>
     <input type="multiselect" token="search_attributes">
       <label>Attributes</label>
-      <default>disabled=0</default>
-      <delimiter> OR </delimiter>
+      <delimiter> </delimiter>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>query</fieldForValue>
       <search>
         <query>| inputlookup amelia_saved_search_attributes.csv</query>
       </search>
+      <initialValue>auto_summarize=1,action.summary_index=1,dispatch.earliest_time=rt*</initialValue>
+      <change>
+        <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+        <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
+      </change>
     </input>
-    <input type="radio" token="include">
+    <input type="radio" token="include_tok">
       <label>Include these attributes?</label>
-      <choice value="">Include</choice>
-      <choice value="NOT">Exclude</choice>
-      <default></default>
+      <choice value="include_any">Include any</choice>
+      <choice value="exclude_any">Exclude any</choice>
+      <choice value="include_all">Include all</choice>
+      <choice value="exclude_all">Exclude all</choice>
+      <default>include_any</default>
+      <change>
+        <condition value="include_any">
+          <set token="bool">OR</set>
+          <set token="include"></set>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
+        </condition>
+        <condition value="exclude_any">
+          <set token="bool">OR</set>
+          <set token="include">NOT</set>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
+        </condition>
+        <condition value="include_all">
+          <set token="bool">AND</set>
+          <set token="include"></set>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
+        </condition>
+        <condition value="exclude_all">
+          <set token="bool">AND</set>
+          <set token="include">NOT</set>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
+        </condition>
+      </change>
     </input>
     <input type="multiselect" token="fieldz">
       <label>Fields</label>
@@ -74,10 +105,13 @@
       <suffix>*"</suffix>
       <default>*</default>
     </input>
+    <html>
+      <a href="https://localhost:8000/en-US/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=amelia&amp;lookup=amelia_saved_search_attributes.csv&amp;type=csv" target="_blank">Amelia Saved Search Attributes Lookup</a>
+</html>
   </fieldset>
   <row>
     <panel>
-      <html>Showing searches that $include$ match $search_attributes$</html>
+      <html>Showing searches that $search_attributes_string$</html>
     </panel>
   </row>
   <row>
@@ -87,7 +121,7 @@
         <search base="base">
           <query>| foreach * 
     [ eval all_fields=mvappend(all_fields,"&lt;&lt;FIELD&gt;&gt;=".'&lt;&lt;FIELD&gt;&gt;') ] 
-| lookup amelia_saved_search_attributes.csv query as all_fields | search $search_attributes$ | chart count by eai:acl.app label
+| lookup saved_search_attributes query as all_fields | search $search_attributes_string$ | chart count by eai:acl.app label
 | addcoltotals labelfield=eai:acl.app</query>
         </search>
         <option name="drilldown">none</option>
@@ -102,7 +136,7 @@
         <search base="base">
           <query>| $fieldz$</query>
         </search>
-        <option name="count">100</option>
+        <option name="count">1</option>
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
         <option name="percentagesRow">false</option>
