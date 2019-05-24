@@ -109,7 +109,7 @@
   </fieldset>
   <row>
     <panel>
-      <html>Showing searches that $search_attributes_string$</html>
+      <html><pre>$the_query$</pre></html>
     </panel>
   </row>
   <row>
@@ -133,6 +133,9 @@
         <title>Searches</title>
         <search base="base">
           <query>| $fieldz$</query>
+          <progress>
+            <set token="the_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">1</option>
         <option name="dataOverlayMode">none</option>
