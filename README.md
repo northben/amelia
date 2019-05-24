@@ -12,4 +12,10 @@ Ever feel like you're stumbling around in the dark, trying to discover the relev
 
 The sourcetype explorer dashboard lists all search-time operations for the selected search head, props.conf stanza, and app. Optionally display metadata. Identify tags produced by event types, and event types related to each tag, etc.
 
+### Saved Search Explorer
+
+Trying to tame your saved searches? Amelia's Saved Search Explorer dashboard is just what you need!
+
+![Demo of Saved Search Explorer dashboard](demo_saved_search_explorer.gif)
+
 Get busy exploring!
