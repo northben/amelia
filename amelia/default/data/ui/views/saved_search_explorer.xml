@@ -104,7 +104,7 @@
       <default>*</default>
     </input>
     <html>
-      <a href="/app/lookup_editor/lookup_edit?lookup=amelia_saved_search_attributes.csv&amp;namespace=amelia&type=csv&owner=nobody" target="_blank">Amelia Saved Search Attributes Lookup</a>
+      <a href="/app/lookup_editor/lookup_edit?lookup=amelia_saved_search_attributes.csv&amp;namespace=amelia&amp;type=csv&amp;owner=nobody" target="_blank">Amelia Saved Search Attributes Lookup</a>
 </html>
   </fieldset>
   <row>
