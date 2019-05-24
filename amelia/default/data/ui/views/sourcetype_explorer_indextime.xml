@@ -1,0 +1,509 @@
+<form>
+  <search id="selection_base">
+    <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/sourcetypes/
+| fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
+| stats count by eai:acl.app title</query>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+  </search>
+  <label>Sourcetype Explorer (Indextime)</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
+      <label>Search head instance</label>
+      <showClearButton>false</showClearButton>
+      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_indexer)`</populatingSearch>
+      <selectFirstChoice>true</selectFirstChoice>
+      <change>
+        <condition value="*">
+          <set token="host">$row.host$</set>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="app">
+      <label>App</label>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
+      </search>
+      <choice value="*">All</choice>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="props_stanza">
+      <label>Props.conf Stanza</label>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/$app$/properties/props | stats count by title</query>
+      </search>
+      <change>
+        <condition match="label=&quot;All&quot;">
+          <unset token="props_selection"></unset>
+        </condition>
+        <condition>
+          <set token="props_selection">true</set>
+        </condition>
+      </change>
+    </input>
+    <input type="multiselect" token="fieldz">
+      <label>Show metadata</label>
+      <choice value="">none</choice>
+      <choice value="eai:acl.perms.*">Permissions (eai:acl.perms.*)</choice>
+      <choice value="updated">Date Updated</choice>
+      <choice value="eai:acl.app">App (eai:acl.app)</choice>
+      <choice value="eai:acl.owner">Owner (eai:acl.owner)</choice>
+      <choice value="eai:acl.sharing">Sharing (eai:acl.sharing)</choice>
+      <choice value="eai:acl.removable">Removable (eai:acl.removable)</choice>
+      <default></default>
+      <prefix> </prefix>
+      <delimiter> </delimiter>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>This dashboard shows index-time field configurations.
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel >
+      <title>SEDCMD</title>
+      <table>
+        <search>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/$app$/properties/props 
+| fields title id 
+| rename title as props_stanza 
+| `url_encode(props_stanza)`
+            | map maxsearches=9999 search="| rest splunk_server=$splunk_server$ /servicesNS/-/$app$/properties/props/$$props_stanza$$ | eval props_stanza=$$props_stanza$$ | rename title as property" 
+| search property="SEDCMD-*" props_stanza=*
+
+| map maxsearches=999 search="| rest splunk_server=$splunk_server$ /servicesNS/-/$app$/properties/props/$$props_stanza$$/$$property$$ | eval props_stanza=$$props_stanza$$, property=$$property$$ "
+           </query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <preview>
+            <condition match="$job.resultCount$ = 0">
+              <unset token="operation_1"></unset>
+            </condition>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_1">true</set>
+            </condition>
+          </preview>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$operation_1$">
+        <div>
+            <h3>There are no SEDCMD</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$operation_2$">
+      <title>2 - Field extraction that uses a field transform</title>
+      <table>
+        <search>
+          <progress>
+            <unset token="transform_stanza"></unset>
+          </progress>
+          <query>| rest /servicesNS/-/-/data/props/extractions/
+| search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
+| fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <preview>
+            <condition match="$job.resultCount$ = 0">
+              <unset token="operation_2"></unset>
+            </condition>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_2">true</set>
+            </condition>
+          </preview>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+        <drilldown>
+          <condition match="$click.value2$ == $transform_stanza$">
+            <unset token="transform_stanza"></unset>
+          </condition>
+          <condition field="value">
+            <set token="transform_stanza">$click.value2$</set>
+          </condition>
+          <condition field="attribute"></condition>
+          <condition field="type"></condition>
+        </drilldown>
+      </table>
+    </panel>
+    <panel depends="$transform_stanza$">
+      <title>2 - Transforms referenced by props</title>
+      <table>
+        <title>$transform_stanza$</title>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/extractions/
+| search eai:acl.app=$app|s$ title=$transform_stanza|s$
+| fields - LOOKAHEAD WRITE_META
+| fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
+| transpose
+| search "row 1"!=""
+</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$operation_2$">
+        <div>
+            <h3>There are no field extractions that use a transform</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$props_selection$">
+      <title>3 - Automatic key-value field extraction</title>
+      <table>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props/$props_stanza|u$/
+| search title=*KV*
+| eval url=replace(id,".*?(/servicesNS.*)", "\1")
+| map search="| rest $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
+| fields title value $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$props_selection$">
+        <div>
+            <h3>Select a props.conf stanza to see key-value field extraction configuration</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$operation_4$">
+      <title>4 - Field aliasing</title>
+      <table>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/fieldaliases
+| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+| fields - alias.*
+| fields attribute value $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <preview>
+            <condition match="$job.resultCount$ = 0">
+              <unset token="operation_4"></unset>
+            </condition>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_4">true</set>
+            </condition>
+          </preview>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$operation_4$">
+        <div>
+            <h3>There are no field aliases</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$operation_5$">
+      <title>5 - Calculated fields</title>
+      <table>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/calcfields
+| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+| fields - alias.*
+| fields attribute value $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <preview>
+            <condition match="$job.resultCount$ = 0">
+              <unset token="operation_5"></unset>
+            </condition>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_5">true</set>
+            </condition>
+          </preview>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$operation_5$">
+        <div>
+            <h3>There are no calculated fields</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$operation_6$">
+      <title>6 - Lookups</title>
+      <table>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/lookups
+| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+| fields - alias.*
+| fields attribute value transform $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <preview>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_6">true</set>
+            </condition>
+            <condition>
+              <unset token="operation_6"></unset>
+            </condition>
+          </preview>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+        <fields>attribute value $fieldz$</fields>
+        <drilldown>
+          <condition match="$row.transform$ == $lookup_stanza$">
+            <unset token="lookup_stanza"></unset>
+          </condition>
+          <condition>
+            <set token="lookup_stanza">$row.transform$</set>
+          </condition>
+        </drilldown>
+      </table>
+    </panel>
+    <panel depends="$lookup_stanza$">
+      <title>6 - Definitions for Lookups</title>
+      <table>
+        <title>$lookup_stanza$</title>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
+| search eai:acl.app=$app|s$
+| fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DEPTH_LIMIT DEST_KEY FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX SOURCE_KEY WRITE_META author disabled fields_array fields_list filename id published splunk_server title type $fieldz$ | transpose</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>7 - Event types</title>
+      <input type="text" token="eventtype_search" searchWhenChanged="true">
+        <label>Search</label>
+        <prefix/>
+        <suffix/>
+        <initialValue></initialValue>
+      </input>
+      <table depends="$operation_7$">
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/eventtypes
+| search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
+| fields title search priority $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <progress>
+            <unset token="eventtype_stanza"></unset>
+          </progress>
+          <preview>
+            <condition match="$job.resultCount$ = 0">
+              <unset token="operation_7"></unset>
+            </condition>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_7">true</set>
+            </condition>
+          </preview>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+        <drilldown>
+          <condition match="$row.title$ == $eventtype_stanza$">
+            <unset token="eventtype_stanza"></unset>
+          </condition>
+          <condition field="title">
+            <set token="eventtype_stanza">$row.title$</set>
+          </condition>
+          <condition field="search"></condition>
+        </drilldown>
+      </table>
+    </panel>
+    <panel depends="$eventtype_stanza$">
+      <title>7 - Tags for Event Types</title>
+      <table>
+        <title>$eventtype_stanza$</title>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+| search eai:acl.app=$app|s$ title="eventtype=$eventtype_stanza$"
+| fields title tags $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$operation_7$">
+        <div>
+            <h3>There are no event types</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$operation_8$">
+      <title>8 - Tags</title>
+      <input type="multiselect" token="tags">
+        <label>Select tags</label>
+        <choice value="*">All</choice>
+        <default>*</default>
+        <valuePrefix>tags=</valuePrefix>
+        <delimiter> OR </delimiter>
+        <fieldForLabel>tags</fieldForLabel>
+        <fieldForValue>tags</fieldForValue>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+| search eai:acl.app=$app|s$
+| fields title tags $fieldz$
+| stats values(tags) as tags
+| mvexpand tags</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <preview>
+            <condition match="$job.resultCount$ = 0">
+              <unset token="operation_8"></unset>
+            </condition>
+            <condition match="$job.resultCount$ &gt; 0">
+              <set token="operation_8">true</set>
+            </condition>
+          </preview>
+        </search>
+      </input>
+      <table>
+        <title>$tags$</title>
+        <search>
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+| search eai:acl.app=$app|s$ $tags$
+| fields title tags $fieldz$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html rejects="$operation_8$">
+        <div>
+            <h3>There are no tags</h3>
+        </div>
+      </html>
+    </panel>
+  </row>
+</form>
