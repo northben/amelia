@@ -106,7 +106,7 @@
       <default>*</default>
     </input>
     <html>
-      <a href="https://localhost:8000/en-US/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=amelia&amp;lookup=amelia_saved_search_attributes.csv&amp;type=csv" target="_blank">Amelia Saved Search Attributes Lookup</a>
+      <a href="/app/lookup_editor/lookup_edit?lookup=amelia_saved_search_attributes.csv&amp;namespace=amelia&type=csv&owner=nobody" target="_blank">Amelia Saved Search Attributes Lookup</a>
 </html>
   </fieldset>
   <row>
@@ -119,8 +119,8 @@
       <table>
         <title>Count of searches by app and attributes</title>
         <search base="base">
-          <query>| foreach * 
-    [ eval all_fields=mvappend(all_fields,"&lt;&lt;FIELD&gt;&gt;=".'&lt;&lt;FIELD&gt;&gt;') ] 
+          <query>| foreach *
+    [ eval all_fields=mvappend(all_fields,"&lt;&lt;FIELD&gt;&gt;=".'&lt;&lt;FIELD&gt;&gt;') ]
 | lookup saved_search_attributes query as all_fields | search $search_attributes_string$ | chart count by eai:acl.app label
 | addcoltotals labelfield=eai:acl.app</query>
         </search>
