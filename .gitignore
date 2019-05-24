@@ -48,3 +48,11 @@ splunk_httpinput
 splunk_instrumentation
 splunk_monitoring_console
 user-prefs
+lookup_editor
+splunk_app_stream
+Splunk_TA_stream
+local.meta
+SecKit_SA_idm_common
+SecKit_SA_idm_windows
+developer_gadgets
+amelia/lookups/lookup_file_backups
