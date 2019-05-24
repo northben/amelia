@@ -2,10 +2,8 @@
   <label>Saved Search Explorer</label>
   <search id="base">
     <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
-| fields - display.* action.*
-| eval search_field=""
-| foreach *
-    [ eval search_field=search_field + " " + coalesce('&lt;&lt;FIELD&gt;&gt;',"")]
+| `remove_unnecessary_fields`
+| `create_mv_search_field`
 | search $app$ $search_attributes_string$ $search_field$</query>
   </search>
   <fieldset submitButton="false">
