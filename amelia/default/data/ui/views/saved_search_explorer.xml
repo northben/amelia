@@ -109,11 +109,6 @@
   </fieldset>
   <row>
     <panel>
-      <html><pre>$the_query$</pre></html>
-    </panel>
-  </row>
-  <row>
-    <panel>
       <table>
         <title>Count of searches by app and attributes</title>
         <search base="base">
@@ -129,8 +124,15 @@
   </row>
   <row>
     <panel>
+      <title>Searches</title>
+      <html>
+        <pre>$the_query$</pre>
+      </html>
+    </panel>
+    </row>
+    <row>
+    <panel>
       <table>
-        <title>Searches</title>
         <search base="base">
           <query>| $fieldz$</query>
           <progress>
