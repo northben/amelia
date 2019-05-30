@@ -59,6 +59,7 @@
       <choice value="eai:acl.owner">Owner (eai:acl.owner)</choice>
       <choice value="eai:acl.sharing">Sharing (eai:acl.sharing)</choice>
       <choice value="eai:acl.removable">Removable (eai:acl.removable)</choice>
+      <choice value="stanza">Stanza</choice>
       <default></default>
       <prefix> </prefix>
       <delimiter> </delimiter>
