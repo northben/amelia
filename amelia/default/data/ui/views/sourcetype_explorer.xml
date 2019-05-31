@@ -45,7 +45,7 @@
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
@@ -117,7 +117,7 @@
           <progress>
             <unset token="transform_stanza"></unset>
           </progress>
-          <query>| rest /servicesNS/-/-/data/props/extractions/
+          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/
 | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
 | fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"</query>
           <earliest>-24h@h</earliest>
