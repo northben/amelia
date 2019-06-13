@@ -200,7 +200,7 @@
           <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props/$props_stanza|u$/
 | search title=*KV*
 | eval url=replace(id,".*?(/servicesNS.*)", "\1")
-| map search="| rest $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
+| map search="| rest splunk_server=$splunk_server$ $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
 | fields title value $fieldz$</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
