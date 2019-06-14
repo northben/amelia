@@ -44,7 +44,7 @@
       </search>
       <initialValue>auto_summarize=1,action.summary_index=1,dispatch.earliest_time=rt*</initialValue>
       <change>
-        <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+        <eval token="search_attributes_bool">mvjoin(split($search_attributes$,"|")," ".bool." ")</eval>
         <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
       </change>
     </input>
