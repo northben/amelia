@@ -36,7 +36,7 @@
     </input>
     <input type="multiselect" token="search_attributes">
       <label>Attributes</label>
-      <delimiter> </delimiter>
+      <delimiter>|</delimiter>
       <fieldForLabel>label</fieldForLabel>
       <fieldForValue>query</fieldForValue>
       <search>
@@ -59,25 +59,25 @@
         <condition value="include_any">
           <set token="bool">OR</set>
           <set token="include"></set>
-          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$,"|")," ".bool." ")</eval>
           <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
         </condition>
         <condition value="exclude_any">
           <set token="bool">OR</set>
           <set token="include">NOT</set>
-          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$,"|")," ".bool." ")</eval>
           <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
         </condition>
         <condition value="include_all">
           <set token="bool">AND</set>
           <set token="include"></set>
-          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$,"|")," ".bool." ")</eval>
           <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
         </condition>
         <condition value="exclude_all">
           <set token="bool">AND</set>
           <set token="include">NOT</set>
-          <eval token="search_attributes_bool">mvjoin(split($search_attributes$," ")," ".bool." ")</eval>
+          <eval token="search_attributes_bool">mvjoin(split($search_attributes$,"|")," ".bool." ")</eval>
           <eval token="search_attributes_string">include." (".search_attributes_bool.")"</eval>
         </condition>
       </change>
