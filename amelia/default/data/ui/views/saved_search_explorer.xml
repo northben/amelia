@@ -3,7 +3,7 @@
   <search id="base">
     <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
 | `remove_unnecessary_fields`
-| `create_mv_search_field`
+| `create_mv_search_field($fieldz$)`
 | search $app$ $search_attributes_string$ $search_field$</query>
   </search>
   <fieldset submitButton="false">
