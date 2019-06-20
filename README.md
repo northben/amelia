@@ -18,4 +18,7 @@ Trying to tame your saved searches? Amelia's Saved Search Explorer dashboard is 
 
 ![Demo of Saved Search Explorer dashboard](demo_saved_search_explorer.gif)
 
+#### Customize the attributes lookup table
+The [lookup file](https://github.com/northben/amelia/blob/master/amelia/lookups/amelia_saved_search_attributes.csv) contains some attributes that identify saved searches that are the cause problems of some performance problems, and you can add any other attributes to find searches that are important to you.
+
 Get busy exploring!
