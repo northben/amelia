@@ -3,7 +3,7 @@
 
 []
 access = read : [ * ], write : [ admin, power ]
-import = splunk_monitoring_console, splunk_management_console, search
+import = __globals__, splunk_monitoring_console, splunk_management_console, search
 
 
 ### EVENT TYPES
