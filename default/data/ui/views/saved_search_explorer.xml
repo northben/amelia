@@ -44,8 +44,7 @@
       </search>
       <initialValue>disabled=0</initialValue>
       <change>
-        <eval token="search_all_attributes_bool">mvjoin(split($search_all_attributes$,"|")," AND ")</eval>
-        <eval token="search_all_attributes_string">include." (".search_all_attributes_bool.")"</eval>
+        <eval token="search_all_attributes_string">"(".mvjoin(split($search_all_attributes$,"|")," AND ").")"</eval>
       </change>
     </input>
     <input type="multiselect" token="search_any_attributes">
@@ -58,8 +57,7 @@
       </search>
       <initialValue>auto_summarize=1,action.summary_index=1,dispatch.earliest_time=rt*</initialValue>
       <change>
-        <eval token="search_any_attributes_bool">mvjoin(split($search_any_attributes$,"|")," OR ")</eval>
-        <eval token="search_any_attributes_string">include." (".search_any_attributes_bool.")"</eval>
+        <eval token="search_any_attributes_string">"(".mvjoin(split($search_any_attributes$,"|")," OR ").")"</eval>
       </change>
     </input>
     <input type="multiselect" token="fieldz">
