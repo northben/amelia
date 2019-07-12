@@ -11,3 +11,4 @@ Continuous scheduling (vs. Realtime),realtime_schedule=0
 ES: context gen,"title=""* - context gen"""
 ES: lookup gen,"title=""* - lookup gen"""
 ES: other gen,"title=""*gen"" NOT title=""* - context gen"" NOT title=""* - lookup gen"""
+"ES: Correlation search ""rule""","title=""*- rule"""
