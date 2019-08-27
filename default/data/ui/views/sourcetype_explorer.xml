@@ -47,8 +47,8 @@
       <search>
         <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
       </search>
-      <choice value="*">All</choice>
-      <default>*</default>
+      <choice value="-">All</choice>
+      <default>-</default>
     </input>
     <input type="multiselect" token="fieldz">
       <label>Show metadata</label>
