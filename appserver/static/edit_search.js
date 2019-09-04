@@ -8,30 +8,36 @@ require([
 
   // remove the id field from the result table - it's not human friendly but we need it in order to edit the search
   searchTable.getVisualization(function(tableView) {
-    var searchManager = tableView['managers'][0]['name']
-    var searchManager = splunkjs.mvc.Components.get(searchManager)
+    var searchManager = splunkjs.mvc.Components.get(tableView['managers'][0]['name'])
 
-    var theData = searchManager.data('results', { count: 1 })
+    var searchTableData = searchManager.data('results', { count: 1 })
 
-    theData.on('data', function(d) {
-      if (typeof theData.data() !== 'undefined') {
-        tableView.settings.set('fields', removeIdFieldFromTable(d.data()['fields'])
-        )
-      }
-    })
+    removeIdFieldFromSearchTable(searchTableData, tableView)
   })
 
   // allow users to edit search properties by selecting a choice in the "edit" field
   searchTable.on('click', function(e) {
     e.preventDefault()
 
-    var clickedCell = e.data['click.name2']
-    if (clickedCell == 'edit') {
+    handleClickOnEdit(e)
+  })
+
+  function removeIdFieldFromSearchTable(searchTableData, tableView) {
+    searchTableData.on('data', function(d) {
+      if (typeof searchTableData.data() !== 'undefined') {
+        tableView.settings.set('fields', removeIdFieldFromTable(d.data()['fields'])
+        )
+      }
+    })
+  }
+
+  function handleClickOnEdit(e) {
+    if (e.data['click.name2'] == 'edit') {
       var url = convertRestUrlToSplunkWebUrl(e.data['row.id'])
       var editAction = e.data['click.value2']
       editSearch(url, editAction)
     }
-  })
+  }
 
   function removeIdFieldFromTable(fields) {
     return fields.filter(function(item) {
