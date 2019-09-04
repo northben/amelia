@@ -1,4 +1,4 @@
-<form>
+<form script="edit_search.js">
   <label>Saved Search Explorer</label>
   <search id="base">
     <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
@@ -110,16 +110,16 @@
   </row>
   <row>
     <panel>
-      <table>
+      <table id="searchTable">
         <search base="base">
-          <query>| $fieldz$</query>
+          <query>| $fieldz$ id | eval edit=mvappend("disable","enable")</query>
           <progress>
             <set token="the_query">$job.search$</set>
           </progress>
         </search>
         <option name="count">100</option>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">row</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
