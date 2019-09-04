@@ -1,9 +1,11 @@
 require([
+  'underscore',
+  'jquery',
   'splunkjs/mvc',
   'splunkjs/mvc/tableview',
   'splunkjs/mvc/searchmanager',
   'splunkjs/mvc/simplexml/ready!'
-], function(mvc, TableView, SearchManager, _) {
+], function(_, $, mvc, TableView, SearchManager) {
   var searchTable = splunkjs.mvc.Components.get('searchTable')
 
   // remove the id field from the result table - it's not human friendly but we need it in order to edit the search
