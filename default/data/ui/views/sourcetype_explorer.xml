@@ -21,7 +21,16 @@
         </condition>
       </change>
     </input>
-
+    <input type="dropdown" token="app">
+      <label>App</label>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
+      </search>
+      <choice value="-">All</choice>
+      <default>-</default>
+    </input>
     <input type="dropdown" token="props_stanza">
       <label>Props.conf Stanza</label>
       <fieldForLabel>title</fieldForLabel>
@@ -39,16 +48,6 @@
           <set token="props_selection">true</set>
         </condition>
       </change>
-    </input>
-    <input type="dropdown" token="app">
-      <label>App</label>
-      <fieldForLabel>title</fieldForLabel>
-      <fieldForValue>title</fieldForValue>
-      <search>
-        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
-      </search>
-      <choice value="-">All</choice>
-      <default>-</default>
     </input>
     <input type="multiselect" token="fieldz">
       <label>Show metadata</label>
@@ -457,8 +456,6 @@
       <title>8 - Tags</title>
       <input type="multiselect" token="tags">
         <label>Select tags</label>
-        <choice value="*">All</choice>
-        <default>*</default>
         <valuePrefix>tags=</valuePrefix>
         <delimiter> OR </delimiter>
         <fieldForLabel>tags</fieldForLabel>
@@ -480,6 +477,11 @@
             </condition>
           </preview>
         </search>
+        <choice value="*">All</choice>
+        <default>*</default>
+        <change>
+         <eval token="form.tags">if(mvcount('form.tags')=0,"*",if(mvcount('form.tags')!=1,mvfilter('form.tags'!="*"),'form.tags'))</eval>
+       </change>
       </input>
       <table>
         <title>$tags$</title>
