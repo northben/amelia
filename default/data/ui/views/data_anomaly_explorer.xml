@@ -1,0 +1,128 @@
+<form>
+  <label>Data Anomaly Explorer</label>
+  <search id="index_sourcetype">
+    <query>| tstats count where index=* OR index=_* by index sourcetype</query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <search id="outliers">
+    <query>| tstats count where index=$index$ sourcetype=$sourcetype$ earliest=$time.earliest$ latest=$time.latest$ by _time span=1h 
+| makecontinuous _time span=1h 
+| fillnull count value=0 
+$eval_threshold_fields$
+| eventstats avg(count) stdevp(count) $threshold_type$
+| rename *(*) as *_*
+| eval min_threshold=$min_threshold$, max_threshold=round(avg_count+stdevp_count*$n_stdev$)
+| eval is_outlier=if(count&gt;max_threshold OR count&lt;min_threshold,1,0)
+| $filter$
+| fields - $fieldz$
+    </query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <search>
+    <query>| makeresults | eval min_threshold="$min_threshold_select$" | eval min_threshold=replace(min_threshold, "n_stdev", "$n_stdev$")</query>
+    <done>
+      <set token="min_threshold">$result.min_threshold$</set>
+    </done>
+  </search>
+  <fieldset submitButton="false">
+    <input type="time" token="time">
+      <label>Time Range</label>
+      <default>
+        <earliest>-7d@w0</earliest>
+        <latest>@w0</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="index">
+      <label>Index</label>
+      <fieldForLabel>index</fieldForLabel>
+      <fieldForValue>index</fieldForValue>
+      <search base="index_sourcetype">
+        <query>| dedup index</query>
+      </search>
+    </input>
+    <input type="dropdown" token="sourcetype">
+      <label>Sourcetype</label>
+      <fieldForLabel>sourcetype</fieldForLabel>
+      <fieldForValue>sourcetype</fieldForValue>
+      <search base="index_sourcetype">
+        <query>| search index=$index$ </query>
+      </search>
+      <choice value="*">All</choice>
+    </input>
+    <input type="radio" token="threshold_type">
+      <label>Static/Dynamic Thresholds</label>
+      <choice value="">Static</choice>
+      <choice value="by date_wday date_hour">Dynamic (by weekday and hour)</choice>
+      <change>
+        <condition value="by date_wday date_hour">
+          <set token="eval_threshold_fields">| eval date_wday=strftime(_time, "%w"), date_hour=strftime(_time, "%H")</set>
+        </condition>
+        <condition>
+          <unset token="eval_threshold_fields"></unset>
+          <set token="eval_threshold_fields"></set>
+        </condition>
+      </change>
+      <default></default>
+    </input>
+    <input type="radio" token="min_threshold_select" searchWhenChanged="true">
+      <label>Minimum Threshold</label>
+      <choice value="round(avg_count-stdevp_count * n_stdev)">Avg - standard deviation</choice>
+      <choice value="max(0,round(avg_count-stdevp_count * n_stdev))">Zero OR avg - standard deviation</choice>
+      <default>round(avg_count-stdevp_count * n_stdev)</default>
+    </input>
+    <input type="radio" token="n_stdev" searchWhenChanged="true">
+      <label># Standard Deviations</label>
+      <choice value="1">1 (68.27%)</choice>
+      <choice value="2">2 (95.45%)</choice>
+      <choice value="3">3 (99.73%)</choice>
+      <default>1</default>
+    </input>
+    <input type="checkbox" token="fieldz">
+      <label>Hide Fields</label>
+      <choice value="stdev*">Standard Deviation</choice>
+      <choice value="avg*">Average</choice>
+      <choice value="date*">Date threshold buckets</choice>
+      <choice value="is_outlier">is_outlier</choice>
+      <default>avg*,date*</default>
+      <delimiter> </delimiter>
+    </input>
+    <input type="radio" token="filter">
+      <label>Filter</label>
+      <choice value="search is_outlier=1">Exclude Normal Values (outliers only)</choice>
+      <choice value="noop">Include all values</choice>
+      <default>noop</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <search base="outliers">
+          <query>| noop</query>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">500</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search base="outliers">
+          <query>
+          | noop
+          </query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
