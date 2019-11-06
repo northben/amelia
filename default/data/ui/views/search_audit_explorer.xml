@@ -1,0 +1,137 @@
+<form>
+  <label>Search Audit Explorer</label>
+  <search id="base">
+    <query>
+      index=_audit $user$ action=search NOT "info=granted REST" search=search* 
+      | fields *
+    </query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+    <sampleRatio>$sample_ratio$</sampleRatio>
+  </search>
+  <search base="base" id="base_index">
+    <query>
+      | eval the_index=coalesce(the_index, "*"), the_source=coalesce(the_source, "*"), the_sourcetype=coalesce(the_sourcetype, "*") 
+      | eval type=if(like(the_savedsearch_name,"%"),"saved search", "ad-hoc")
+      | search $the_index$ $type$
+      | fields *
+    </query>
+  </search>
+  <fieldset submitButton="false">
+    <input type="time" token="time">
+      <label>Time range</label>
+      <default>
+        <earliest>-1d@d</earliest>
+        <latest>@d</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="the_index">
+      <label>Index</label>
+      <prefix>the_index=</prefix>
+      <search base="base">
+        <query>
+          | stats count by the_index
+        </query>
+      </search>
+      <fieldForLabel>the_index</fieldForLabel>
+      <fieldForValue>the_index</fieldForValue>
+      <choice value="*">All</choice>
+    </input>
+    <input type="radio" token="sample_ratio">
+      <label>Sample Ratio</label>
+      <choice value="1">1</choice>
+      <choice value="10">10</choice>
+      <choice value="100">100</choice>
+      <choice value="1000">1000</choice>
+      <default>1000</default>
+    </input>
+    <input type="multiselect" token="user">
+      <label>Users</label>
+      <choice value="*">All</choice>
+      <prefix>(</prefix>
+      <suffix>)</suffix>
+      <valuePrefix>user="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> OR </delimiter>
+      <search base="base">
+        <query>
+          | stats count by user
+        </query>
+      </search>
+      <default>*</default>
+      <fieldForLabel>user</fieldForLabel>
+      <fieldForValue>user</fieldForValue>
+    </input>
+    <input type="radio" token="type">
+      <label>Search Type</label>
+      <choice value="*">All</choice>
+      <choice value="ad-hoc">ad-hoc</choice>
+      <choice value="saved search">saved search</choice>
+      <default>*</default>
+      <prefix>type="</prefix>
+      <suffix>"</suffix>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <p>This dashboard searches the audittrail in the _audit index.</p>
+        <p>Splunk administrators can use this dashboard to analyze the most-searched Splunk indexes, as well as to characterize and pinpoint the searches involved. Whereas the Monitoring Console's Search Activity dashboard shows similar information, it does not show the index/source/sourcetype that was searched, and it does not show the search query itself.</p>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>top indexes by count of searches</title>
+        <search base="base">
+          <query>
+            | eval the_index=coalesce(the_index, "*"), the_source=coalesce(the_source, "*"), the_sourcetype=coalesce(the_sourcetype, "*") 
+            | top the_index limit=0
+            | sort - count
+          </query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <set token="form.the_index">$row.the_index$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>count of searches by user and type for index: $form.the_index$</title>
+        <search base="base_index">
+          <query>| top user type limit=0 
+| sort - count</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <set token="form.type">$row.type$</set>
+          <set token="form.user">$row.user$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>top searches by user for index: $form.the_index$</title>
+        <search base="base_index">
+          <query>| top search by user type
+            | sort - percent count</query>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
