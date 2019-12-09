@@ -28,6 +28,6 @@ Display fields, and search for text in any visible field. Searches are quantifie
 ![Demo of Saved Search Explorer dashboard](https://ben-repo-artifacts.s3.us-west-2.amazonaws.com/2019-10-29_14-09-17.gif)
 
 #### Customize the attributes lookup table
-The [lookup file](https://github.com/northben/amelia/blob/master/amelia/lookups/amelia_saved_search_attributes.csv) contains some attributes that identify saved searches that are sometimes the cause of performance problems, and you can add any other attributes to find searches that are important to you.
+The [lookup file](https://github.com/northben/amelia/blob/master/lookups/amelia_saved_search_attributes.csv) contains some attributes that identify saved searches that are sometimes the cause of performance problems, and you can add any other attributes to find searches that are important to you.
 
 Get busy exploring!
