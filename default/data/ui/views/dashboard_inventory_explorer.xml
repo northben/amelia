@@ -50,6 +50,14 @@ $show_queries$
       </change>
       <default></default>
     </input>
+    <input type="multiselect" token="fieldz">
+      <label>Show Additional Fields</label>
+      <choice value="">N/A</choice>
+      <choice value="title">title</choice>
+      <choice value="updated">updated</choice>
+      <initialValue></initialValue>
+      <delimiter> </delimiter>
+    </input>
   </fieldset>
   <row>
     <panel>
@@ -95,7 +103,7 @@ $show_queries$
             | fields - eai:data
             | search eai:appName=$appName|s$ author=$author|s$
             | eval thumbnail="/static/app/" + 'eai:appName' + "/thumbnails/" + title + ".png"
-            | table thumbnail eai:appName label description author queries title updated _url
+            | table thumbnail eai:appName label description author queries _url $fieldz$
           </query>
         </search>
         <option name="count">20</option>
