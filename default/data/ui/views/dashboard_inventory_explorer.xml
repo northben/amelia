@@ -22,6 +22,16 @@
         <query>stats count by eai:appName</query>
       </search>
     </input>
+    <input type="dropdown" token="author">
+      <label>Author</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <fieldForLabel>author</fieldForLabel>
+      <fieldForValue>author</fieldForValue>
+      <search base="base">
+        <query>stats count by author</query>
+      </search>
+    </input>
   </fieldset>
   <row>
     <panel>
@@ -30,11 +40,31 @@
         <search base="base">
           <query>stats count by eai:appName</query>
         </search>
+        <option name="charting.axisY.scale">linear</option>
         <option name="charting.chart">bar</option>
         <option name="charting.drilldown">all</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.placement">bottom</option>
         <option name="refresh.display">progressbar</option>
         <drilldown>
           <set token="form.appName">$click.value$</set>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Dashboard count by Author</title>
+        <search base="base">
+          <query>stats count by author</query>
+        </search>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <set token="form.author">$click.value$</set>
         </drilldown>
       </chart>
     </panel>
@@ -44,7 +74,7 @@
       <table id="table1">
         <search base="base">
           <query>
-            | search eai:appName=$appName|s$
+            | search eai:appName=$appName|s$ author=$author|s$
             | eval thumbnail="/static/app/" + 'eai:appName' + "/thumbnails/" + title + ".png"
             | table thumbnail *
           </query>
