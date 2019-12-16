@@ -1,5 +1,6 @@
 <form script="thumbnails.js">
   <label>Dashboard Inventory Explorer</label>
+  <description>Browse the dashboards built by other Splunk users and app developers that you can use</description>
   <search id="base">
     <query>| rest splunk_server=local /servicesNS/-/-/data/ui/views
 | search isVisible=1 isDashboard=1 NOT eai:acl.sharing=user
