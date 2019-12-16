@@ -2,7 +2,7 @@
   <label>Dashboard Inventory Explorer</label>
   <description>Browse the dashboards built by other Splunk users and app developers that you can use</description>
   <search id="base">
-    <query>| rest splunk_server=local /servicesNS/-/-/data/ui/views
+    <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/ui/views
 | search isVisible=1 isDashboard=1 NOT eai:acl.sharing=user
 | fields eai:appName label description author eai:data title updated
 | eval _url="/app/" + 'eai:appName' + "/" + title
@@ -13,6 +13,13 @@ $show_queries$
     <sampleRatio>1</sampleRatio>
   </search>
   <fieldset submitButton="false">
+    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
+      <label>Search head instance</label>
+      <showClearButton>false</showClearButton>
+      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`
+      </populatingSearch>
+      <selectFirstChoice>true</selectFirstChoice>
+    </input>
     <input type="dropdown" token="appName">
       <label>App</label>
       <choice value="*">All</choice>
