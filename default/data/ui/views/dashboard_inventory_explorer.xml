@@ -1,0 +1,66 @@
+<form script="thumbnails.js">
+  <label>Dashboard Inventory Explorer</label>
+  <search id="base">
+    <query>| rest splunk_server=local /servicesNS/-/-/data/ui/views
+| search isVisible=1 isDashboard=1 NOT eai:acl.sharing=user
+| fields author description eai:appName eai:data eai:type label title updated
+| eval _url="/app/" + 'eai:appName' + "/" + title
+| fields - eai:data eai:type
+| fields eai:appName label description author *</query>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+    <sampleRatio>1</sampleRatio>
+  </search>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="appName">
+      <label>App</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <fieldForLabel>eai:appName</fieldForLabel>
+      <fieldForValue>eai:appName</fieldForValue>
+      <search base="base">
+        <query>stats count by eai:appName</query>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Dashboard count by App</title>
+        <search base="base">
+          <query>stats count by eai:appName</query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <set token="form.appName">$click.value$</set>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table id="table1">
+        <search base="base">
+          <query>
+            | search eai:appName=$appName|s$
+            | eval thumbnail="/static/app/" + 'eai:appName' + "/thumbnails/" + title + ".png"
+            | table thumbnail *
+          </query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <link target="_blank">$row._url|n$</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</form>
