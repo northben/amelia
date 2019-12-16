@@ -3,10 +3,10 @@
   <search id="base">
     <query>| rest splunk_server=local /servicesNS/-/-/data/ui/views
 | search isVisible=1 isDashboard=1 NOT eai:acl.sharing=user
-| fields author description eai:appName eai:data eai:type label title updated
+| fields eai:appName label description author eai:data title updated
 | eval _url="/app/" + 'eai:appName' + "/" + title
-| fields - eai:data eai:type
-| fields eai:appName label description author *</query>
+$show_queries$
+</query>
     <earliest>-24h@h</earliest>
     <latest>now</latest>
     <sampleRatio>1</sampleRatio>
@@ -31,6 +31,24 @@
       <search base="base">
         <query>stats count by author</query>
       </search>
+    </input>
+    <input type="radio" token="show_queries">
+      <label>Show Queries</label>
+      <choice value="">No</choice>
+      <choice value="true">Yes</choice>
+      <change>
+        <condition value="true">
+          <set token="show_queries">
+            <![CDATA[
+| xpath field=eai:data outfield=queries "//query" 
+| mvexpand queries
+| eval queries=replace(queries, "^[\r\n]*\s*(.*)[\r\n]*\s*", "\1")
+| mvcombine queries
+    ]]>
+          </set>
+        </condition>
+      </change>
+      <default></default>
     </input>
   </fieldset>
   <row>
@@ -74,9 +92,10 @@
       <table id="table1">
         <search base="base">
           <query>
+            | fields - eai:data
             | search eai:appName=$appName|s$ author=$author|s$
             | eval thumbnail="/static/app/" + 'eai:appName' + "/thumbnails/" + title + ".png"
-            | table thumbnail *
+            | table thumbnail eai:appName label description author queries title updated _url
           </query>
         </search>
         <option name="count">20</option>
