@@ -2,23 +2,12 @@
   <label>Saved Search Explorer</label>
   <description>List, filter, and quantify saved searches along with metadata for each search. Additionally, toggle any search to be enabled/disabled.</description>
   <search id="base">
-    <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
+    <query>| rest /servicesNS/-/-/saved/searches splunk_server=local
 | `remove_unnecessary_fields`
 | `create_mv_search_field($fieldz$)`
 | search $app$ $search_all_attributes_string$ $search_any_attributes_string$ $search_field$</query>
   </search>
   <fieldset submitButton="false">
-    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
-      <label>Search head instance</label>
-      <showClearButton>false</showClearButton>
-      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`</populatingSearch>
-      <selectFirstChoice>true</selectFirstChoice>
-      <change>
-        <condition value="*">
-          <set token="host">$row.host$</set>
-        </condition>
-      </change>
-    </input>
     <input type="multiselect" token="app">
       <label>App</label>
       <valuePrefix>eai:acl.app="</valuePrefix>
@@ -27,7 +16,7 @@
       <fieldForLabel>eai:acl.app</fieldForLabel>
       <fieldForValue>eai:acl.app</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$ | search $search_all_attributes_string$ $search_any_attributes_string$
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local | search $search_all_attributes_string$ $search_any_attributes_string$
 | stats count by eai:acl.app</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
@@ -69,7 +58,7 @@
       <fieldForLabel>column</fieldForLabel>
       <fieldForValue>column</fieldForValue>
       <search>
-        <query>| rest /servicesNS/-/-/saved/searches splunk_server=$splunk_server$
+        <query>| rest /servicesNS/-/-/saved/searches splunk_server=local
 | head 1 | `remove_unnecessary_fields`
 | transpose</query>
         <earliest>-24h@h</earliest>
