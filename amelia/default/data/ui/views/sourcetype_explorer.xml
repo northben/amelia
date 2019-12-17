@@ -1,6 +1,6 @@
 <form>
   <search id="selection_base">
-    <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/sourcetypes/
+    <query>| rest splunk_server=local /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
 | stats count by eai:acl.app title</query>
     <earliest>-24h@h</earliest>
@@ -9,23 +9,12 @@
   <label>Sourcetype Explorer</label>
   <description>Browse fields for any sourcetype (or props.conf stanza) and inspect associated event types and tags</description>
   <fieldset submitButton="false">
-    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
-      <label>Search head instance</label>
-      <showClearButton>false</showClearButton>
-      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`</populatingSearch>
-      <selectFirstChoice>true</selectFirstChoice>
-      <change>
-        <condition value="*">
-          <set token="host">$row.host$</set>
-        </condition>
-      </change>
-    </input>
     <input type="dropdown" token="app">
       <label>App</label>
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
+        <query>| rest splunk_server=local /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
@@ -43,7 +32,10 @@
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/$app_url$/properties/props | stats count by title</query>
+        <query>
+          | rest splunk_server=local /servicesNS/-/$app_url$/properties/props
+          | stats count by title
+        </query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
@@ -97,7 +89,7 @@
       <title>All Queries</title>
       <html>
       <pre>
-        $operation_1_query$ 
+        $operation_1_query$
         | append [ $operation_2_query$ ]
         | append [ $operation_3_query$ ]
         | append [ $operation_4_query$ ]
@@ -115,7 +107,7 @@
       <table>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/
+            | rest splunk_server=local /servicesNS/-/-/data/props/extractions/
             | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=EXTRACT-*
             | fields attribute value $fieldz$
           </query>
@@ -171,7 +163,7 @@
             <unset token="transform_stanza"></unset>
           </progress>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/
+            | rest splunk_server=local /servicesNS/-/-/data/props/extractions/
             | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
             | fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"
           </query>
@@ -215,7 +207,7 @@
         <title>$transform_stanza$</title>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/extractions/
+            | rest splunk_server=local /servicesNS/-/-/data/transforms/extractions/
             | search eai:acl.app=$app|s$ title=$transform_stanza|s$
             | fields - LOOKAHEAD WRITE_META
             | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
@@ -264,10 +256,10 @@
       <table>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props/$props_stanza|u$/
+            | rest splunk_server=local /servicesNS/-/-/properties/props/$props_stanza|u$/
             | search title=*KV*
             | eval url=replace(id,".*?(/servicesNS.*)", "\1")
-            | map search="| rest splunk_server=$splunk_server$ $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
+            | map search="| rest splunk_server=local $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
             | fields title value $fieldz$
           </query>
           <earliest>-24h@h</earliest>
@@ -311,7 +303,7 @@
       <table>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/fieldaliases
+            | rest splunk_server=local /servicesNS/-/-/data/props/fieldaliases
             | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
             | fields - alias.*
             | fields attribute value $fieldz$
@@ -365,7 +357,7 @@
       <table>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/calcfields
+            | rest splunk_server=local /servicesNS/-/-/data/props/calcfields
             | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
             | fields - alias.*
             | fields attribute value $fieldz$
@@ -419,7 +411,7 @@
       <table>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/lookups
+            | rest splunk_server=local /servicesNS/-/-/data/props/lookups
             | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
             | fields - alias.*
             | fields attribute value transform $fieldz$
@@ -464,7 +456,7 @@
         <title>$lookup_stanza$</title>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
+            | rest splunk_server=local /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
             | search eai:acl.app=$app|s$
             | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DEPTH_LIMIT DEST_KEY FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX SOURCE_KEY WRITE_META author disabled fields_array fields_list filename id published splunk_server title type $fieldz$
             | transpose
@@ -504,7 +496,7 @@
       <table depends="$operation_7$">
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/eventtypes
+            | rest splunk_server=local /servicesNS/-/-/saved/eventtypes
             | search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
             | fields title disabled priority search $fieldz$
           </query>
@@ -550,7 +542,7 @@
         <title>$eventtype_stanza$</title>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+            | rest splunk_server=local /servicesNS/-/-/saved/fvtags
             | search eai:acl.app=$app|s$ title="eventtype=$eventtype_stanza$"
             | fields title tags $fieldz$
           </query>
@@ -597,7 +589,7 @@
         <fieldForValue>tags</fieldForValue>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+            | rest splunk_server=local /servicesNS/-/-/saved/fvtags
             | search eai:acl.app=$app|s$
             | fields title tags $fieldz$
             | stats values(tags) as tags
@@ -624,7 +616,7 @@
         <title>$tags$</title>
         <search>
           <query>
-            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+            | rest splunk_server=local /servicesNS/-/-/saved/fvtags
             | search eai:acl.app=$app|s$ $tags$
             | fields title tags disabled $fieldz$
           </query>
