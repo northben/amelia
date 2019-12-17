@@ -13,7 +13,7 @@ require([
         },
         render: function($td, cell) {
             // Create the thumbnail tag and add it to the table cell
-            $td.html(_.template('<img src="<%-thumbnail%>" />', {
+            $td.html(_.template('<img src="<%-thumbnail%>" onerror="this.style.display=\'none\'" />', {
                 thumbnail: cell.value,
             }));
         }
