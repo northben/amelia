@@ -48,7 +48,7 @@ $show_queries$
         <condition value="true">
           <set token="show_queries">
             <![CDATA[
-| xpath field=eai:data outfield=queries "//query" 
+| xpath field=eai:data outfield=queries "//query"
 | mvexpand queries
 | eval queries=replace(queries, "^[\r\n]*\s*(.*)[\r\n]*\s*", "\1")
 | mvcombine queries
@@ -110,7 +110,7 @@ $show_queries$
           <query>
             | fields - eai:data
             | search eai:appName=$appName|s$ author=$author|s$
-            | eval thumbnail="/static/app/" + 'eai:appName' + "/thumbnails/" + title + ".png"
+            | eval thumbnail="/static/app/$env:app$/thumbnails/" + 'eai:appName' + "/" + title + ".png"
             | table thumbnail eai:appName label description author queries _url $fieldz$
           </query>
         </search>
