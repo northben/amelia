@@ -5,8 +5,10 @@
     <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/ui/views
 | search isVisible=1 isDashboard=1 NOT eai:acl.sharing=user
 | fields eai:appName label description author eai:data title updated
+| `create_mv_search_field("label description author title")`
 | eval _url="/app/" + 'eai:appName' + "/" + title
-$show_queries$
+| $show_queries$
+| search $search_field$
 </query>
     <earliest>-24h@h</earliest>
     <latest>now</latest>
@@ -42,13 +44,13 @@ $show_queries$
     </input>
     <input type="radio" token="show_queries">
       <label>Show Queries</label>
-      <choice value="">No</choice>
+      <choice value="noop">No</choice>
       <choice value="true">Yes</choice>
       <change>
         <condition value="true">
           <set token="show_queries">
             <![CDATA[
-| xpath field=eai:data outfield=queries "//query"
+ xpath field=eai:data outfield=queries "//query"
 | mvexpand queries
 | eval queries=replace(queries, "^[\r\n]*\s*(.*)[\r\n]*\s*", "\1")
 | mvcombine queries
@@ -56,7 +58,13 @@ $show_queries$
           </set>
         </condition>
       </change>
-      <default></default>
+      <default>noop</default>
+    </input>
+    <input type="text" token="search_field">
+      <label>Search</label>
+      <prefix>search_field="*</prefix>
+      <suffix>*"</suffix>
+      <default>*</default>
     </input>
     <input type="multiselect" token="fieldz">
       <label>Show Additional Fields</label>
