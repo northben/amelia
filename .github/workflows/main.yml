@@ -1,0 +1,55 @@
+name: Create Splunk application package
+
+on:
+  push:
+    branches:
+      - master
+      - splunk_cloud
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@v2
+      with:
+        ref: master
+
+    - name: Archive Master Release
+      uses: juankaram/archive-action@v1.0.0
+      with:
+        args: tar -czvf amelia.spl amelia
+
+    - name: Save Master Release
+      uses: xresloader/upload-to-github-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: "*.spl"
+        tags: false
+        draft: false
+        branches: "master"
+        verbose: true
+
+    - name: Checkout splunk_cloud
+      uses: actions/checkout@v2
+      with:
+        ref: splunk_cloud
+
+    - name: Archive Splunk Cloud Release
+      uses: juankaram/archive-action@v1.0.0
+      with:
+        args: tar -czvf amelia_splunk_cloud.spl amelia
+
+    - name: Save splunk_cloud Release
+      uses: xresloader/upload-to-github-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: "*.spl"
+        tags: false
+        draft: false
+        branches: "splunk_cloud"
+        verbose: true
