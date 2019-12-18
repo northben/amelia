@@ -1,5 +1,4 @@
 <form>
-
   <search id="selection_base">
     <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
@@ -13,8 +12,7 @@
     <input type="dropdown" searchWhenChanged="true" token="splunk_server">
       <label>Search head instance</label>
       <showClearButton>false</showClearButton>
-      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`
-      </populatingSearch>
+      <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`</populatingSearch>
       <selectFirstChoice>true</selectFirstChoice>
       <change>
         <condition value="*">
@@ -67,7 +65,8 @@
   </fieldset>
   <row>
     <panel>
-      <html>This dashboard does not show index-time field configurations. <p>Read the official doc: <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a></p>
+      <html>This dashboard does not show index-time field configurations. <p>Read the official doc: <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a>
+        </p>
       </html>
     </panel>
   </row>
@@ -139,9 +138,6 @@
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
-
-
-
         <drilldown>
           <condition match="$click.value2$ == $transform_stanza$">
             <unset token="transform_stanza"></unset>
@@ -152,8 +148,6 @@
           <condition field="attribute"></condition>
           <condition field="type"></condition>
         </drilldown>
-
-
       </table>
     </panel>
     <panel depends="$transform_stanza$">
@@ -376,8 +370,8 @@
       <title>7 - Event types</title>
       <input type="text" token="eventtype_search" searchWhenChanged="true">
         <label>Search</label>
-        <prefix></prefix>
-        <suffix></suffix>
+        <prefix/>
+        <suffix/>
         <initialValue></initialValue>
       </input>
       <table depends="$operation_7$">
@@ -408,7 +402,6 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
         <drilldown>
-
           <condition match="$row.title$ == $eventtype_stanza$">
             <unset token="eventtype_stanza"></unset>
           </condition>
@@ -416,7 +409,6 @@
             <set token="eventtype_stanza">$row.title$</set>
           </condition>
           <condition field="search"></condition>
-
         </drilldown>
       </table>
     </panel>
