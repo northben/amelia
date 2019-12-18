@@ -30,12 +30,12 @@
       <prefix>the_index=</prefix>
       <search base="base">
         <query>
-          | stats count by the_index
+          | append [ | makeresults | eval the_index="*" ]
+          | stats count by the_index 
         </query>
       </search>
       <fieldForLabel>the_index</fieldForLabel>
       <fieldForValue>the_index</fieldForValue>
-      <choice value="*">All</choice>
     </input>
     <input type="radio" token="sample_ratio">
       <label>Sample Ratio</label>
