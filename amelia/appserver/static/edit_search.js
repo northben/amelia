@@ -1,3 +1,12 @@
+var parameterMap = {
+  disable: {
+    disabled: 1
+  },
+  enable: {
+    disabled: 0
+  }
+}
+
 require([
   'underscore',
   'jquery',
@@ -65,21 +74,6 @@ require([
   }
 
   function editSearch(url, data) {
-
-    var headers = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-
-    var parameterMap = {
-      disable: {
-        disabled: 1
-      },
-      enable: {
-        disabled: 0
-      }
-    }
-
-    var arguments = parameterMap[data]
 
     $.ajax({
           type: "POST",
