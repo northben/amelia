@@ -4,12 +4,13 @@
     <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
 | stats count by eai:acl.app title</query>
-        <earliest>-24h@h</earliest>
-        <latest>now</latest>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
   </search>
   <label>Sourcetype Explorer</label>
+  <description>Browse fields for any sourcetype (or props.conf stanza) and inspect associated event types and tags</description>
   <fieldset submitButton="false">
-        <input type="dropdown" searchWhenChanged="true" token="splunk_server">
+    <input type="dropdown" searchWhenChanged="true" token="splunk_server">
       <label>Search head instance</label>
       <showClearButton>false</showClearButton>
       <populatingSearch fieldForLabel="serverName" fieldForValue="serverName">| `dmc_get_instance_info(dmc_group_search_head)`
@@ -480,8 +481,8 @@
         <choice value="*">All</choice>
         <default>*</default>
         <change>
-         <eval token="form.tags">if(mvcount('form.tags')=0,"*",if(mvcount('form.tags')!=1,mvfilter('form.tags'!="*"),'form.tags'))</eval>
-       </change>
+          <eval token="form.tags">if(mvcount('form.tags')=0,"*",if(mvcount('form.tags')!=1,mvfilter('form.tags'!="*"),'form.tags'))</eval>
+        </change>
       </input>
       <table>
         <title>$tags$</title>

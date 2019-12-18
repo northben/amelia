@@ -1,4 +1,7 @@
 <form>
+  <description>
+    Display customizable metadata about Splunk indexes and sourcetypes.
+  </description>
   <search id="base">
     <query>
       | tstats min(_time) as first_event max(_time) as last_event count where index=* by index sourcetype
@@ -50,7 +53,7 @@
   <row>
     <panel>
       <html>
-        This dashboard provides customizable metadata about Splunk events. Additional information is provided by the <a href="https://localhost:8000/en-US/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=search&amp;lookup=amelia_data_dictionary_lookup.csv&amp;type=csv" target="_blank">Amelia Data Dictionary Lookup</a>
+        Additional information is provided by the <a href="https://localhost:8000/en-US/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=search&amp;lookup=amelia_data_dictionary_lookup.csv&amp;type=csv" target="_blank">Amelia Data Dictionary Lookup</a>
       </html>
     </panel>
   </row>
