@@ -65,7 +65,6 @@ require([
   }
 
   function editSearch(url, data) {
-    var http = new splunkjs.SplunkWebHttp()
 
     var headers = {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -82,11 +81,25 @@ require([
 
     var arguments = parameterMap[data]
 
-    http.post(url, headers, arguments)
-  }
+    $.ajax({
+          type: "POST",
+          url: url,
+          data: parameterMap[data],
+          async: true,
+          contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+          success: function(data, textStatus, xhr) {
+                console.log("success!", data);
+          },
+          error: function(xhr, textStatus, error) {
+                console.error("Error!", error);
+          }
+        })
+      }
 
   function convertRestUrlToSplunkWebUrl(url) {
-    return url.replace(/.*?:8089/g, '')
+    var url = url.replace(/.*?:8089/g, '/en-US/splunkd/__raw')
+    url = window.location.protocol + "//" + window.location.host + url
+    return url
   }
 
 })
