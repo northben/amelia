@@ -118,7 +118,7 @@
           <query>
             | fields - eai:data
             | search eai:appName=$appName|s$ author=$author|s$
-            | eval thumbnail="/static/app/$env:app$/thumbnails/" + 'eai:appName' + "/" + title + ".png"
+            | eval thumbnail=`thumbnail_url` + 'eai:appName' + "/" + title + ".png"
             | table thumbnail eai:appName label description author queries _url $fieldz$
           </query>
         </search>
