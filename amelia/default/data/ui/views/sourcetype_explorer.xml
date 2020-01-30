@@ -70,6 +70,20 @@
       <prefix> </prefix>
       <delimiter> </delimiter>
     </input>
+    <input type="radio" token="show_queries">
+      <label>Show Queries</label>
+      <choice value="true">Show</choice>
+      <choice value="false">Hide</choice>
+      <default>true</default>
+      <change>
+        <condition match="label=&quot;Hide&quot;">
+          <unset token="show_queries"></unset>
+        </condition>
+        <condition>
+          <set token="show_queries">true</set>
+        </condition>
+      </change>
+    </input>
   </fieldset>
   <row>
     <panel>
@@ -95,6 +109,9 @@
               <set token="operation_1">true</set>
             </condition>
           </preview>
+          <progress>
+            <set token="operation_1_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -105,6 +122,14 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
+    </panel>
+  </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>1 - Query for inline field extraction (no field transform)</title>
+      <html>
+        <pre>$operation_1_query$</pre>
+      </html>
     </panel>
   </row>
   <row>
@@ -138,6 +163,9 @@
               <set token="operation_2">true</set>
             </condition>
           </preview>
+          <progress>
+            <set token="operation_2_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -185,6 +213,14 @@
       </table>
     </panel>
   </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>2 - Query for transforms referenced by props</title>
+      <html>
+        <pre>$operation_2_query$</pre>
+      </html>
+    </panel>
+  </row>
   <row>
     <panel>
       <html rejects="$operation_2$">
@@ -207,6 +243,9 @@
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
+          <progress>
+            <set token="operation_3_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -217,6 +256,14 @@
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
       </table>
+    </panel>
+  </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>3 - Query for Automatic key-value field extraction</title>
+      <html>
+        <pre>$operation_3_query$</pre>
+      </html>
     </panel>
   </row>
   <row>
@@ -248,6 +295,9 @@
               <set token="operation_4">true</set>
             </condition>
           </preview>
+          <progress>
+            <set token="operation_4_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -258,6 +308,14 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
+    </panel>
+  </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>4 - Query for field aliasing</title>
+      <html>
+        <pre>$operation_4_query$</pre>
+      </html>
     </panel>
   </row>
   <row>
@@ -289,6 +347,9 @@
               <set token="operation_5">true</set>
             </condition>
           </preview>
+          <progress>
+            <set token="operation_5_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -299,6 +360,14 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
+    </panel>
+  </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>5 - Query for calculated fields</title>
+      <html>
+        <pre>$operation_5_query$</pre>
+      </html>
     </panel>
   </row>
   <row>
@@ -330,6 +399,9 @@
               <unset token="operation_6"></unset>
             </condition>
           </preview>
+          <progress>
+            <set token="operation_6_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -373,6 +445,14 @@
       </table>
     </panel>
   </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>6 - Query for lookups</title>
+      <html>
+        <pre>$operation_6_query$</pre>
+      </html>
+    </panel>
+  </row>
   <row>
     <panel>
       <title>7 - Event types</title>
@@ -401,6 +481,9 @@
               <set token="operation_7">true</set>
             </condition>
           </preview>
+          <progress>
+            <set token="operation_7_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -441,6 +524,14 @@
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
       </table>
+    </panel>
+  </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>7 - Query for event types</title>
+      <html>
+        <pre>$operation_7_query$</pre>
+      </html>
     </panel>
   </row>
   <row>
@@ -493,6 +584,9 @@
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
+          <progress>
+            <set token="operation_8_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -502,6 +596,14 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
+    </panel>
+  </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>8 - Query for tags</title>
+      <html>
+        <pre>$operation_8_query$</pre>
+      </html>
     </panel>
   </row>
   <row>
