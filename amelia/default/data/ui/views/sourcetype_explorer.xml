@@ -27,15 +27,23 @@
       <search>
         <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/apps/local | search disabled=0 | stats count by title</query>
       </search>
-      <choice value="-">All</choice>
-      <default>-</default>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <change>
+        <condition match="label!=&quot;All&quot;">
+          <set token="app_url">$value$</set>
+        </condition>
+        <condition match="label=&quot;All&quot;">
+          <set token="app_url">-</set>
+        </condition>
+      </change>
     </input>
     <input type="dropdown" token="props_stanza">
       <label>Props.conf Stanza</label>
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/$app$/properties/props | stats count by title</query>
+        <query>| rest splunk_server=$splunk_server$ /servicesNS/-/$app_url$/properties/props | stats count by title</query>
       </search>
       <choice value="*">All</choice>
       <default>*</default>
