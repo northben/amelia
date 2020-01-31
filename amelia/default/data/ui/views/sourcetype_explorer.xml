@@ -97,7 +97,11 @@
       <title>1 - Inline field extraction (no field transform)</title>
       <table>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/ | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=EXTRACT-* | fields attribute value $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/
+            | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=EXTRACT-*
+            | fields attribute value $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -136,7 +140,7 @@
     <panel>
       <html rejects="$operation_1$">
         <div>
-            <h3>There are no inline field extractions</h3>
+          <h3>There are no inline field extractions</h3>
         </div>
       </html>
     </panel>
@@ -149,9 +153,11 @@
           <progress>
             <unset token="transform_stanza"></unset>
           </progress>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/
-| search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
-| fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/extractions/
+            | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
+            | fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -191,13 +197,14 @@
       <table>
         <title>$transform_stanza$</title>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/extractions/
-| search eai:acl.app=$app|s$ title=$transform_stanza|s$
-| fields - LOOKAHEAD WRITE_META
-| fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
-| transpose
-| search "row 1"!=""
-</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/extractions/
+            | search eai:acl.app=$app|s$ title=$transform_stanza|s$
+            | fields - LOOKAHEAD WRITE_META
+            | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DELIMS DEPTH_LIMIT DEST_KEY FIELDS FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX REPEAT_MATCH SOURCE_KEY WRITE_META $fieldz$
+            | transpose
+            | search "row 1"!=""
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -235,11 +242,13 @@
       <title>3 - Automatic key-value field extraction</title>
       <table>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props/$props_stanza|u$/
-| search title=*KV*
-| eval url=replace(id,".*?(/servicesNS.*)", "\1")
-| map search="| rest splunk_server=$splunk_server$ $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
-| fields title value $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/properties/props/$props_stanza|u$/
+            | search title=*KV*
+            | eval url=replace(id,".*?(/servicesNS.*)", "\1")
+            | map search="| rest splunk_server=$splunk_server$ $$url$$ | eval title=\"$$title$$\", updated=\"$$updated$$\" "
+            | fields title value $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -270,7 +279,7 @@
     <panel>
       <html rejects="$props_selection$">
         <div>
-            <h3>Select a props.conf stanza to see key-value field extraction configuration</h3>
+          <h3>Select a props.conf stanza to see key-value field extraction configuration</h3>
         </div>
       </html>
     </panel>
@@ -280,10 +289,12 @@
       <title>4 - Field aliasing</title>
       <table>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/fieldaliases
-| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
-| fields - alias.*
-| fields attribute value $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/fieldaliases
+            | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+            | fields - alias.*
+            | fields attribute value $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -332,10 +343,12 @@
       <title>5 - Calculated fields</title>
       <table>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/calcfields
-| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
-| fields - alias.*
-| fields attribute value $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/calcfields
+            | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+            | fields - alias.*
+            | fields attribute value $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -384,10 +397,12 @@
       <title>6 - Lookups</title>
       <table>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/lookups
-| search eai:acl.app=$app|s$ stanza=$props_stanza|s$
-| fields - alias.*
-| fields attribute value transform $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/props/lookups
+            | search eai:acl.app=$app|s$ stanza=$props_stanza|s$
+            | fields - alias.*
+            | fields attribute value transform $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -427,9 +442,12 @@
       <table>
         <title>$lookup_stanza$</title>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
-| search eai:acl.app=$app|s$
-| fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DEPTH_LIMIT DEST_KEY FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX SOURCE_KEY WRITE_META author disabled fields_array fields_list filename id published splunk_server title type $fieldz$ | transpose</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/data/transforms/lookups/$lookup_stanza$
+            | search eai:acl.app=$app|s$
+            | fields CAN_OPTIMIZE CLEAN_KEYS DEFAULT_VALUE DEPTH_LIMIT DEST_KEY FORMAT KEEP_EMPTY_VALS LOOKAHEAD MATCH_LIMIT MV_ADD REGEX SOURCE_KEY WRITE_META author disabled fields_array fields_list filename id published splunk_server title type $fieldz$
+            | transpose
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -464,9 +482,11 @@
       </input>
       <table depends="$operation_7$">
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/eventtypes
-| search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
-| fields title disabled priority search $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/eventtypes
+            | search eai:acl.app=$app|s$ search="*$eventtype_search$*" OR title="*$eventtype_search$*"
+            | fields title disabled priority search $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -508,9 +528,11 @@
       <table>
         <title>$eventtype_stanza$</title>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
-| search eai:acl.app=$app|s$ title="eventtype=$eventtype_stanza$"
-| fields title tags $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+            | search eai:acl.app=$app|s$ title="eventtype=$eventtype_stanza$"
+            | fields title tags $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -553,11 +575,13 @@
         <fieldForLabel>tags</fieldForLabel>
         <fieldForValue>tags</fieldForValue>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
-| search eai:acl.app=$app|s$
-| fields title tags $fieldz$
-| stats values(tags) as tags
-| mvexpand tags</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+            | search eai:acl.app=$app|s$
+            | fields title tags $fieldz$
+            | stats values(tags) as tags
+            | mvexpand tags
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <preview>
@@ -578,9 +602,11 @@
       <table>
         <title>$tags$</title>
         <search>
-          <query>| rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
-| search eai:acl.app=$app|s$ $tags$
-| fields title tags disabled $fieldz$</query>
+          <query>
+            | rest splunk_server=$splunk_server$ /servicesNS/-/-/saved/fvtags
+            | search eai:acl.app=$app|s$ $tags$
+            | fields title tags disabled $fieldz$
+          </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
