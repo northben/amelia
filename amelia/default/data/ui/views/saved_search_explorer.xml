@@ -1,4 +1,4 @@
-<form script="edit_search.js">
+<form script="edit_search.js" stylesheet="datatables.min.css">
   <label>Saved Search Explorer</label>
   <description>List, filter, and quantify saved searches along with metadata for each search. Additionally, toggle any search to be enabled/disabled.</description>
   <search id="base">

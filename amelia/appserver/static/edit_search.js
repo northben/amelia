@@ -1,3 +1,12 @@
+require.config({
+paths: {
+    datatables: '/static/app/amelia/datatables.min'
+},
+shim: {
+      "datatables": ['jquery']
+     }
+});
+
 var parameterMap = {
   disable: {
     disabled: 1
@@ -10,12 +19,22 @@ var parameterMap = {
 require([
   'underscore',
   'jquery',
+  'datatables',
   'splunkjs/mvc',
   'splunkjs/mvc/tableview',
   'splunkjs/mvc/searchmanager',
   'splunkjs/mvc/simplexml/ready!'
-], function(_, $, mvc, TableView, SearchManager) {
+], function(_, $, datatables, mvc, TableView, SearchManager) {
+
+  console.log('here!');
+  var theTable = $('#searchTable table tbody')
+  console.log(theTable);
+
+  var theDataTable = theTable.DataTable();
+  console.log(theDataTable);
+
   var searchTable = splunkjs.mvc.Components.get('searchTable')
+  console.log(searchTable);
 
   // remove the id field from the result table - it's not human friendly but we need it in order to edit the search
   searchTable.getVisualization(function(tableView) {
