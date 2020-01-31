@@ -92,6 +92,23 @@
       </html>
     </panel>
   </row>
+  <row depends="$show_queries$">
+    <panel>
+      <title>All Queries</title>
+      <html>
+      <pre>
+        $operation_1_query$ 
+        | append [ $operation_2_query$ ]
+        | append [ $operation_3_query$ ]
+        | append [ $operation_4_query$ ]
+        | append [ $operation_5_query$ ]
+        | append [ $operation_6_query$ ]
+        | append [ $operation_7_query$ ]
+        | append [ $operation_8_query$ ]
+      </pre>
+    </html>
+    </panel>
+  </row>
   <row>
     <panel depends="$operation_1$">
       <title>1 - Inline field extraction (no field transform)</title>
