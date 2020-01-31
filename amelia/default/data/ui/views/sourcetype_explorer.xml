@@ -74,7 +74,7 @@
       <label>Show Queries</label>
       <choice value="true">Show</choice>
       <choice value="false">Hide</choice>
-      <default>true</default>
+      <default>false</default>
       <change>
         <condition match="label=&quot;Hide&quot;">
           <unset token="show_queries"></unset>
