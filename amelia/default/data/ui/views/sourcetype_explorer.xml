@@ -208,6 +208,9 @@
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
+          <progress>
+            <set token="operation_2_transform_query">$job.search$</set>
+          </progress>
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
@@ -225,6 +228,7 @@
       <title>2 - Query for transforms referenced by props</title>
       <html>
         <pre>$operation_2_query$</pre>
+        <pre>$operation_2_transform_query$</pre>
       </html>
     </panel>
   </row>
