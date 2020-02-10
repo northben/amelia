@@ -1,2 +1,2 @@
-sourcetype,description,owner,business purpose
-,,,
+index,sourcetype,description,owner,business purpose
+*,*,Example description. Use * for wildcard in index/sourcetype.,,
