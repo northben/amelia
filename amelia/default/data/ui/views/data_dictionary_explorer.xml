@@ -53,7 +53,7 @@
   <row>
     <panel>
       <html>
-        Additional information is provided by the <a href="https://localhost:8000/en-US/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=search&amp;lookup=amelia_data_dictionary_lookup.csv&amp;type=csv" target="_blank">Amelia Data Dictionary Lookup</a>
+        Additional information is provided by the <a href="/app/lookup_editor/lookup_edit?owner=nobody&amp;namespace=search&amp;lookup=amelia_data_dictionary_lookup.csv&amp;type=csv" target="_blank">Amelia Data Dictionary Lookup</a>
       </html>
     </panel>
   </row>
