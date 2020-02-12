@@ -1,4 +1,4 @@
-<form>
+<form script="table_icons_inline.js">
   <description>
     Display customizable metadata about Splunk indexes and sourcetypes.
   </description>
@@ -59,7 +59,7 @@
   </row>
   <row>
     <panel>
-      <table>
+      <table id="table1">
         <search base="base">
           <query>| search index=$index$
             | where if("$search$"!="",like(lower(description),lower("%$search$%")),true())
@@ -68,7 +68,7 @@
         </search>
         <option name="count">20</option>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">row</option>
         <option name="percentagesRow">false</option>
         <option name="refresh.display">progressbar</option>
         <option name="rowNumbers">false</option>
