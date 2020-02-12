@@ -67,6 +67,7 @@
             | where if("$owner$"!="",owner=="$owner$",true())
             | convert ctime(*_event)
             | foreach * [ eval "&lt;&lt;FIELD&gt;&gt;"=mvdedup('&lt;&lt;FIELD&gt;&gt;') ]
+            | fields index sourcetype first_event last_event count *
             </query>
         </search>
         <option name="count">20</option>
