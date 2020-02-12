@@ -1,21 +1,21 @@
 require([
     'splunkjs/mvc/tableview',
-    'splunkjs/mvc/eventsviewerview',
     'splunkjs/mvc/searchmanager',
     'splunkjs/mvc',
     'underscore',
     'splunkjs/mvc/simplexml/ready!'
-],function(TableView, EventsViewerView, SearchManager, mvc, _) {
+],function(TableView, SearchManager, mvc, _) {
     var EventSearchBasedRowExpansionRenderer = TableView.BaseRowExpansionRenderer.extend({
         initialize: function(args) {
             this._searchManager = new SearchManager({
                 id: 'details-search-manager',
                 preview: false
             });
-            this._chartView = new EventsViewerView({
+            this._chartView = new TableView({
                 managerid: 'details-search-manager',
-                type: "raw",
-                'raw.drilldown': "none"
+                drilldown: 'none',
+                fields: '_time, _raw'
+
             });
         },
         canRender: function(rowData) {
