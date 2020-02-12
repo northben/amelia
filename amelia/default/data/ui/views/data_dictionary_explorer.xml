@@ -1,4 +1,4 @@
-<form script="table_icons_inline.js">
+<form script="table_icons_inline.js,custom_table_row_expansion.js">
   <description>
     Display customizable metadata about Splunk indexes and sourcetypes.
   </description>
