@@ -7,6 +7,7 @@
       | tstats min(_time) as first_event max(_time) as last_event count where index=* by index sourcetype
       | search NOT index IN(assetsummary, cim_modactions, csvsummary, endpoint_summary, firedalerts, notable, risk, summary, threat_activity)
       | lookup amelia_data_dictionary_lookup index sourcetype
+      | $filter$
     </query>
     <earliest>$field1.earliest$</earliest>
     <latest>$field1.latest$</latest>
@@ -48,6 +49,17 @@
         </query>
       </search>
       <default></default>
+    </input>
+    <input type="radio" token="filter" searchWhenChanged="true">
+      <label>Filter</label>
+      <choice value="*">All</choice>
+      <choice value="security_related=&quot;yes&quot;">Is security related</choice>
+      <choice value="security_related=&quot;no&quot;">Not security related</choice>
+      <choice value="NOT security_related=*">Not security defined</choice>
+      <choice value="cim_status=&quot;expected&quot;">Is CIM expected</choice>
+      <choice value="NOT cim_status=*">Not CIM defined</choice>
+      <prefix>search </prefix>
+      <default>*</default>
     </input>
   </fieldset>
   <row>

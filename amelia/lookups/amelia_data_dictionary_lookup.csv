@@ -1,2 +1,2 @@
-index,sourcetype,description,owner,business purpose
-*,*,Example description. Use * for wildcard in index/sourcetype.,,
+index,sourcetype,description,owner,business purpose,security_related,cim_status
+*,*,Example description. Use * for wildcard in index/sourcetype.,,,yes,expected
