@@ -87,20 +87,8 @@
       </html>
     </panel>
   </row>
-  <row depends="$show_queries$">
+  <row>
     <panel>
-      <title>All Queries</title>
-      <html>
-      <pre>
-        $operation_1_query$
-        | append [ $operation_2_query$ ]
-        | append [ $operation_3_query$ ]
-        | append [ $operation_4_query$ ]
-        | append [ $operation_5_query$ ]
-        | append [ $operation_6_query$ ]
-        | append [ $operation_7_query$ ]
-        | append [ $operation_8_query$ ]
-      </pre>
     </html>
     </panel>
   </row>
@@ -138,14 +126,6 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
-    </panel>
-  </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>1 - Query for inline field extraction (no field transform)</title>
-      <html>
-        <pre>$operation_1_query$</pre>
-      </html>
     </panel>
   </row>
   <row>
@@ -235,15 +215,6 @@
       </table>
     </panel>
   </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>2 - Query for transforms referenced by props</title>
-      <html>
-        <pre>$operation_2_query$</pre>
-        <pre>$operation_2_transform_query$</pre>
-      </html>
-    </panel>
-  </row>
   <row>
     <panel>
       <html rejects="$operation_2$">
@@ -283,14 +254,7 @@
       </table>
     </panel>
   </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>3 - Query for Automatic key-value field extraction</title>
       <html>
-        <pre>$operation_3_query$</pre>
-      </html>
-    </panel>
-  </row>
   <row>
     <panel>
       <html rejects="$props_selection$">
@@ -337,14 +301,6 @@
       </table>
     </panel>
   </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>4 - Query for field aliasing</title>
-      <html>
-        <pre>$operation_4_query$</pre>
-      </html>
-    </panel>
-  </row>
   <row>
     <panel>
       <html rejects="$operation_4$">
@@ -389,14 +345,6 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
-    </panel>
-  </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>5 - Query for calculated fields</title>
-      <html>
-        <pre>$operation_5_query$</pre>
-      </html>
     </panel>
   </row>
   <row>
@@ -479,11 +427,7 @@
       </table>
     </panel>
   </row>
-  <row depends="$show_queries$">
     <panel>
-      <title>6 - Query for lookups</title>
-      <html>
-        <pre>$operation_6_query$</pre>
       </html>
     </panel>
   </row>
@@ -564,14 +508,6 @@
       </table>
     </panel>
   </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>7 - Query for event types</title>
-      <html>
-        <pre>$operation_7_query$</pre>
-      </html>
-    </panel>
-  </row>
   <row>
     <panel>
       <html rejects="$operation_7$">
@@ -640,20 +576,37 @@
       </table>
     </panel>
   </row>
-  <row depends="$show_queries$">
-    <panel>
-      <title>8 - Query for tags</title>
-      <html>
-        <pre>$operation_8_query$</pre>
-      </html>
-    </panel>
-  </row>
   <row>
     <panel>
       <html rejects="$operation_8$">
         <div>
             <h3>There are no tags</h3>
         </div>
+      </html>
+    </panel>
+  </row>
+
+  <row depends="$show_queries$">
+    <panel>
+      <title>REST Queries</title>
+        <html>
+          <pre>
+            $operation_1_query$
+
+            $operation_2_query$
+
+            $operation_3_query$
+
+            $operation_4_query$
+
+            $operation_5_query$
+
+            $operation_6_query$
+
+            $operation_7_query$
+
+            $operation_8_query$
+          </pre>
       </html>
     </panel>
   </row>
