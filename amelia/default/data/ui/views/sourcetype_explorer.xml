@@ -100,7 +100,7 @@
          <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_7">7: Event types</a> </li>
          <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_8">8: Tags</a> </li>
        </ul>
-    </html>
+     </html>
     </panel>
   </row>
   <row id="tab_1">
@@ -141,8 +141,6 @@
         <option name="wrap">false</option>
       </table>
     </panel>
-  </row>
-  <row>
     <panel>
       <html rejects="$operation_1$">
         <div>
@@ -233,12 +231,10 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-  </row>
-  <row>
     <panel>
       <html rejects="$operation_2$">
         <div>
-            <h3>There are no field extractions that use a transform</h3>
+          <h3>There are no field extractions that use a transform</h3>
         </div>
       </html>
     </panel>
@@ -272,11 +268,8 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-  </row>
+    <panel rejects="$props_selection$">
       <html>
-  <row>
-    <panel>
-      <html rejects="$props_selection$">
         <div>
           <h3>Select a props.conf stanza to see key-value field extraction configuration</h3>
         </div>
@@ -319,12 +312,10 @@
         <option name="wrap">false</option>
       </table>
     </panel>
-  </row>
-  <row>
     <panel>
       <html rejects="$operation_4$">
         <div>
-            <h3>There are no field aliases</h3>
+          <h3>There are no field aliases</h3>
         </div>
       </html>
     </panel>
@@ -365,12 +356,10 @@
         <option name="wrap">false</option>
       </table>
     </panel>
-  </row>
-  <row>
     <panel>
       <html rejects="$operation_5$">
         <div>
-            <h3>There are no calculated fields</h3>
+          <h3>There are no calculated fields</h3>
         </div>
       </html>
     </panel>
@@ -445,7 +434,6 @@
         <option name="wrap">false</option>
       </table>
     </panel>
-  </row>
     <panel>
       <html rejects="$operation_6$">
         <div>
@@ -454,8 +442,8 @@
       </html>
     </panel>
   </row>
-    <panel>
   <row id="tab_7">
+    <panel depends="$operation_7$">
       <title>7 - Event types</title>
       <html>
         <p>Select an event type to view any tags</p>
@@ -467,7 +455,7 @@
         <suffix/>
         <initialValue></initialValue>
       </input>
-      <table depends="$operation_7$">
+      <table>
         <search>
           <query>
             | rest splunk_server=local /servicesNS/-/-/saved/eventtypes
@@ -538,12 +526,10 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-  </row>
-  <row>
     <panel>
       <html rejects="$operation_7$">
         <div>
-            <h3>There are no event types</h3>
+          <h3>There are no event types</h3>
         </div>
       </html>
     </panel>
@@ -613,12 +599,10 @@
         <option name="wrap">false</option>
       </table>
     </panel>
-  </row>
-  <row>
     <panel>
       <html rejects="$operation_8$">
         <div>
-            <h3>There are no tags</h3>
+          <h3>There are no tags</h3>
         </div>
       </html>
     </panel>
