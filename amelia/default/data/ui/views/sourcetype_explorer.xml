@@ -61,6 +61,9 @@
       <default></default>
       <prefix> </prefix>
       <delimiter> </delimiter>
+      <change>
+        <eval token="form.fieldz">if(mvcount('form.fieldz')=0,"",if(mvcount('form.fieldz')!=1,mvfilter('form.fieldz'!=""),'form.fieldz'))</eval>
+      </change>
     </input>
     <input type="radio" token="show_queries">
       <label>Show Queries</label>
