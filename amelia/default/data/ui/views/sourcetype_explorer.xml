@@ -95,6 +95,9 @@
   <row>
     <panel depends="$operation_1$">
       <title>1 - Inline field extraction (no field transform)</title>
+      <html>
+        <p>Configured in: Settings -> Fields -> Field Extractions</p>
+      </html>
       <table>
         <search>
           <query>
@@ -140,6 +143,11 @@
   <row>
     <panel depends="$operation_2$">
       <title>2 - Field extraction that uses a field transform</title>
+      <html>
+        <p>Select a transform value to view the transforms.conf stanza</p>
+        <p>Configure the transform in: Settings -> Fields -> Field Tranformations<br/>
+           Reference the transform in: Settings -> Fields -> Field Extractions</p>
+      </html>
       <table>
         <search>
           <progress>
@@ -428,14 +436,22 @@
     </panel>
   </row>
     <panel>
+      <html rejects="$operation_6$">
+        <div>
+          <h3>There are no lookups</h3>
+        </div>
       </html>
     </panel>
   </row>
   <row>
     <panel>
       <title>7 - Event types</title>
+      <html>
+        <p>Select an event type to view any tags</p>
+        <p>Configured in: Settings -> Event Types</p>
+      </html>
       <input type="text" token="eventtype_search" searchWhenChanged="true">
-        <label>Search</label>
+        <label>Search (title and definition)</label>
         <prefix/>
         <suffix/>
         <initialValue></initialValue>
@@ -485,6 +501,10 @@
     </panel>
     <panel depends="$eventtype_stanza$">
       <title>7 - Tags for Event Types</title>
+      <html>
+        <p>Configured in: Settings -> Event Types</p>
+        <p>Select an event type title to view its tags, or search (matches title and definition)</p>
+      </html>
       <table>
         <title>$eventtype_stanza$</title>
         <search>
@@ -520,6 +540,13 @@
   <row>
     <panel depends="$operation_8$">
       <title>8 - Tags</title>
+      <html>
+        <p>Select a tag(s) from the dropdown to view event types that provide the tag(s)</p>
+        <p>There are multiple ways to configure tags:<br/>
+          By event type in: Settings -> Event Types -> Tag(s)<br/>
+          By field value pair (e.g. action=failure) in: Settings -> Tags -> List by field value pair<br/>
+          By tag name (e.g. privileged) in: Settings -> Tags -> List by tag name</p>
+      </html>
       <input type="multiselect" token="tags">
         <label>Select tags</label>
         <valuePrefix>tags=</valuePrefix>
