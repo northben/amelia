@@ -1,4 +1,4 @@
-<form script="tabs.js" stylesheet="tabs.css">
+<form script="tabs.js,togglepanel/wrapper.js" stylesheet="tabs.css">
   <search id="selection_base">
     <query>| rest splunk_server=local /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
@@ -65,24 +65,10 @@
         <eval token="form.fieldz">if(mvcount('form.fieldz')=0,"",if(mvcount('form.fieldz')!=1,mvfilter('form.fieldz'!=""),'form.fieldz'))</eval>
       </change>
     </input>
-    <input type="radio" token="show_queries">
-      <label>Show Queries</label>
-      <choice value="true">Show</choice>
-      <choice value="false">Hide</choice>
-      <default>false</default>
-      <change>
-        <condition match="label=&quot;Hide&quot;">
-          <unset token="show_queries"></unset>
-        </condition>
-        <condition>
-          <set token="show_queries">true</set>
-        </condition>
-      </change>
-    </input>
   </fieldset>
   <row>
     <panel>
-      <html>This dashboard does not show index-time field configurations. <p>Read the official doc: <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a>
+      <html>This dashboard shows search-time field, event type, and tag configurations. It does not show index-time configurations.<p>Fields are processed in sequence from left to right. Read the Knowledge Manager Manual explain <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a>
         </p>
       </html>
     </panel>
@@ -608,9 +594,9 @@
     </panel>
   </row>
 
-  <row depends="$show_queries$">
-    <panel>
-      <title>REST Queries</title>
+  <row>
+    <panel id="panel_count_togglepanel_true">
+      <title>Show REST Queries</title>
         <html>
           <pre>
             $operation_1_query$
