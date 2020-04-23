@@ -1,4 +1,4 @@
-<form>
+<form script="tabs.js" stylesheet="tabs.css">
   <search id="selection_base">
     <query>| rest splunk_server=local /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
@@ -87,12 +87,23 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tabs">
     <panel>
+     <html>
+       <ul id="tabs" class="nav nav-tabs">
+         <li class="active"><a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_1">1: Inline field extraction</a></li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_2">2: Field extraction that uses a field transform</a> </li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_3">3: KV mode</a> </li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_4">4: Field aliasing</a> </li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_5">5: Calculated fields</a> </li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_6">6: Lookups</a> </li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_7">7: Event types</a> </li>
+         <li> <a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_8">8: Tags</a> </li>
+       </ul>
     </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_1">
     <panel depends="$operation_1$">
       <title>1 - Inline field extraction (no field transform)</title>
       <html>
@@ -140,7 +151,7 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_2">
     <panel depends="$operation_2$">
       <title>2 - Field extraction that uses a field transform</title>
       <html>
@@ -232,7 +243,7 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_3">
     <panel depends="$props_selection$">
       <title>3 - Automatic key-value field extraction</title>
       <table>
@@ -272,7 +283,7 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_4">
     <panel depends="$operation_4$">
       <title>4 - Field aliasing</title>
       <table>
@@ -318,7 +329,7 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_5">
     <panel depends="$operation_5$">
       <title>5 - Calculated fields</title>
       <table>
@@ -364,7 +375,7 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_6">
     <panel depends="$operation_6$">
       <title>6 - Lookups</title>
       <table>
@@ -443,8 +454,8 @@
       </html>
     </panel>
   </row>
-  <row>
     <panel>
+  <row id="tab_7">
       <title>7 - Event types</title>
       <html>
         <p>Select an event type to view any tags</p>
@@ -537,7 +548,7 @@
       </html>
     </panel>
   </row>
-  <row>
+  <row id="tab_8">
     <panel depends="$operation_8$">
       <title>8 - Tags</title>
       <html>
