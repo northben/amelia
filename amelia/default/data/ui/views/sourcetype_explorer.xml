@@ -68,7 +68,7 @@
   </fieldset>
   <row>
     <panel>
-      <html>This dashboard shows search-time field, event type, and tag configurations. It does not show index-time configurations.<p>Fields are processed in sequence from left to right. Read the Knowledge Manager Manual explain <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">The sequence of search-time operations</a>
+      <html>This dashboard shows search-time field, event type, and tag configuration. Events are processed in sequence from left to right. It does not show index-time configurations. <p>The Knowledge Manager Manual explains <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Searchtimeoperationssequence" target="_blank">the sequence of search-time operations</a>
         </p>
       </html>
     </panel>
@@ -91,9 +91,9 @@
   </row>
   <row id="tab_1">
     <panel depends="$operation_1$">
-      <title>1 - Inline field extraction (no field transform)</title>
+      <title>Inline field extraction (no field transform)</title>
       <html>
-        <p>Configured in: Settings -> Fields -> Field Extractions</p>
+        <p>Configure in: Settings -> Fields -> Field Extractions</p>
       </html>
       <table>
         <search>
@@ -137,7 +137,7 @@
   </row>
   <row id="tab_2">
     <panel depends="$operation_2$">
-      <title>2 - Field extraction that uses a field transform</title>
+      <title>Field extraction that uses a field transform</title>
       <html>
         <p>Select a transform value to view the transforms.conf stanza</p>
         <p>Configure the transform in: Settings -> Fields -> Field Tranformations<br/>
@@ -188,7 +188,7 @@
       </table>
     </panel>
     <panel depends="$transform_stanza$">
-      <title>2 - Transforms referenced by props</title>
+      <title>Transforms referenced by props</title>
       <table>
         <title>$transform_stanza$</title>
         <search>
@@ -227,7 +227,7 @@
   </row>
   <row id="tab_3">
     <panel depends="$props_selection$">
-      <title>3 - Automatic key-value field extraction</title>
+      <title>Automatic key-value field extraction</title>
       <table>
         <search>
           <query>
@@ -264,7 +264,7 @@
   </row>
   <row id="tab_4">
     <panel depends="$operation_4$">
-      <title>4 - Field aliasing</title>
+      <title>Field aliasing</title>
       <table>
         <search>
           <query>
@@ -308,7 +308,7 @@
   </row>
   <row id="tab_5">
     <panel depends="$operation_5$">
-      <title>5 - Calculated fields</title>
+      <title>Calculated fields</title>
       <table>
         <search>
           <query>
@@ -352,7 +352,7 @@
   </row>
   <row id="tab_6">
     <panel depends="$operation_6$">
-      <title>6 - Lookups</title>
+      <title>Lookups</title>
       <table>
         <search>
           <query>
@@ -396,7 +396,7 @@
       </table>
     </panel>
     <panel depends="$lookup_stanza$">
-      <title>6 - Definitions for Lookups</title>
+      <title>Definitions for Lookups</title>
       <table>
         <title>$lookup_stanza$</title>
         <search>
@@ -430,10 +430,10 @@
   </row>
   <row id="tab_7">
     <panel depends="$operation_7$">
-      <title>7 - Event types</title>
+      <title>Event types</title>
       <html>
-        <p>Select an event type to view any tags</p>
-        <p>Configured in: Settings -> Event Types</p>
+        <p>Select an event type title to view its tags</p>
+        <p>Configure in: Settings -> Event Types</p>
       </html>
       <input type="text" token="eventtype_search" searchWhenChanged="true">
         <label>Search (title and definition)</label>
@@ -485,13 +485,8 @@
       </table>
     </panel>
     <panel depends="$eventtype_stanza$">
-      <title>7 - Tags for Event Types</title>
-      <html>
-        <p>Configured in: Settings -> Event Types</p>
-        <p>Select an event type title to view its tags, or search (matches title and definition)</p>
-      </html>
+      <title>Tags for event type: $eventtype_stanza$</title>
       <table>
-        <title>$eventtype_stanza$</title>
         <search>
           <query>
             | rest splunk_server=local /servicesNS/-/-/saved/fvtags
@@ -522,12 +517,12 @@
   </row>
   <row id="tab_8">
     <panel depends="$operation_8$">
-      <title>8 - Tags</title>
+      <title>Tags</title>
       <html>
-        <p>Select a tag(s) from the dropdown to view event types that provide the tag(s)</p>
+        <p>Select tags from the dropdown to view event types that provide the tags</p>
         <p>There are multiple ways to configure tags:<br/>
           By event type in: Settings -> Event Types -> Tag(s)<br/>
-          By field value pair (e.g. action=failure) in: Settings -> Tags -> List by field value pair<br/>
+          By field value (e.g. action=failure) in: Settings -> Tags -> List by field value pair<br/>
           By tag name (e.g. privileged) in: Settings -> Tags -> List by tag name</p>
       </html>
       <input type="multiselect" token="tags">
