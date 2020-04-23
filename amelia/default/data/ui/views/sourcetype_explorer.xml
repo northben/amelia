@@ -151,6 +151,13 @@
           <query>
             | rest splunk_server=local /servicesNS/-/-/data/props/extractions/
             | search eai:acl.app=$app|s$ stanza=$props_stanza|s$ attribute=REPORT-*
+            | append
+              [ | rest splunk_server=local /servicesNS/-/-/configs/conf-props
+              | search title=$props_stanza|s$ eai:acl.app=$app|s$
+              | fields TRANSFORMS eai:* author description title id published splunk_server updated
+              | search TRANSFORMS!=""
+              | rename TRANSFORMS as attribute
+              | eval value=attribute ]
             | fields attribute value type $fieldz$ | makemv value tokenizer="([^, ]+)"
           </query>
           <earliest>-24h@h</earliest>
