@@ -470,7 +470,7 @@
             <unset token="eventtype_stanza"></unset>
           </progress>
           <preview>
-            <condition match="$job.resultCount$ = 0">
+            <condition match="$job.resultCount$ == 0">
               <unset token="operation_7"></unset>
             </condition>
             <condition match="$job.resultCount$ &gt; 0">
