@@ -535,7 +535,7 @@
       <input type="multiselect" token="tags">
         <label>Select tags</label>
         <valuePrefix>tags=</valuePrefix>
-        <delimiter> OR </delimiter>
+        <delimiter> AND </delimiter>
         <fieldForLabel>tags</fieldForLabel>
         <fieldForValue>tags</fieldForValue>
         <search>
