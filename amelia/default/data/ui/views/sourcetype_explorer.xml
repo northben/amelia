@@ -462,10 +462,10 @@
             <unset token="eventtype_stanza"></unset>
           </progress>
           <preview>
-            <condition match="$job.resultCount$ == 0">
+            <condition match="$job.resultCount$ == 0 AND $form.eventtype_search$==&quot;&quot;">
               <unset token="operation_7"></unset>
             </condition>
-            <condition match="$job.resultCount$ &gt; 0">
+            <condition match="$job.resultCount$ &gt; 0 OR $form.eventtype_search$!=&quot;&quot;">
               <set token="operation_7">true</set>
             </condition>
           </preview>
@@ -517,7 +517,7 @@
     <panel>
       <html rejects="$operation_7$">
         <div>
-          <h3>There are no event types</h3>
+          <h3>There are no event types in $app$</h3>
         </div>
       </html>
     </panel>
