@@ -5,9 +5,9 @@
     <query>| rest splunk_server=local /servicesNS/-/-/data/ui/views
 | search isVisible=1 isDashboard=1 NOT eai:acl.sharing=user
 | fields eai:appName label description author eai:data title updated
-| `create_mv_search_field("label description author title")`
 | eval _url="/app/" + 'eai:appName' + "/" + title
 | $show_queries$
+| `create_mv_search_field("label description author title queries")`
 | search $search_field$
 </query>
     <earliest>-24h@h</earliest>
@@ -43,10 +43,11 @@
         <condition value="true">
           <set token="show_queries">
             <![CDATA[
- xpath field=eai:data outfield=queries "//query"
+ xpath field=eai:data outfield=queries "//query" default=""
 | mvexpand queries
 | eval queries=replace(queries, "^[\r\n]*\s*(.*)[\r\n]*\s*", "\1")
 | mvcombine queries
+| nomv queries
     ]]>
           </set>
         </condition>
