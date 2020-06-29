@@ -3,11 +3,11 @@ Enabled,disabled=0
 Disabled,disabled=1
 Scheduled,is_scheduled=1
 Accelerated,auto_summarize=1
-Realtime scheduling (vs. Continuous),realtime_schedule=1
+Realtime schedule (vs. Continuous),realtime_schedule=1
 Summary Index,action.summary_index=1
-Real-Time dispatch,dispatch.earliest_time=rt*
+Real-Time Search,dispatch.earliest_time=rt*
 Private,eai:acl.sharing=user
-Continuous scheduling (vs. Realtime),realtime_schedule=0
+Continuous schedule (vs. Realtime),realtime_schedule=0
 ES: context gen,"title=""* - context gen"""
 ES: lookup gen,"title=""* - lookup gen"""
 ES: other gen,"title=""*gen"" NOT title=""* - context gen"" NOT title=""* - lookup gen"""
