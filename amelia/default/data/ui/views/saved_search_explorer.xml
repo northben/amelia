@@ -3,7 +3,6 @@
   <description>List, filter, and quantify saved searches along with metadata for each search. Additionally, toggle any search to be enabled/disabled.</description>
   <search id="base">
     <query>| rest /servicesNS/-/-/saved/searches splunk_server=local
-| `remove_unnecessary_fields`
 | `create_mv_search_field($fieldz$)`
 | search $app$ $search_all_attributes_string$ $search_any_attributes_string$ $search_field$</query>
   </search>
@@ -59,7 +58,7 @@
       <fieldForValue>column</fieldForValue>
       <search>
         <query>| rest /servicesNS/-/-/saved/searches splunk_server=local
-| head 1 | `remove_unnecessary_fields`
+| head 1 
 | transpose</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
