@@ -1,7 +1,6 @@
 <nav search_view="search">
   <view name="sourcetype_explorer" default='true'/>
   <view name="saved_search_explorer"/>
-  <view name="data_anomaly_explorer"/>
   <view name="dashboard_inventory_explorer"/>
   <view name="data_dictionary_explorer"/>
   <collection label="Others">
