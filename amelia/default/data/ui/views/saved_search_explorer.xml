@@ -21,7 +21,11 @@
         <latest>now</latest>
       </search>
       <choice value="*">All apps</choice>
-      <initialValue>*</initialValue>
+      <default>*</default>
+      <change>
+        <eval token="form.app">if(mvcount('form.app')=0,"*",if(mvcount('form.app')!=1,mvfilter('form.app'!="*"),'form.app'))</eval>
+      </change>
+      
     </input>
     <input type="multiselect" token="search_all_attributes">
       <label>Include ALL Attributes</label>
