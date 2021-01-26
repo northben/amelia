@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "2.0.0",
+  "info": {
+    "title": "Amelia",
+    "id": {
+      "group": null,
+      "name": "amelia",
+      "version": "1.1.4"
+    },
+    "author": [
+      {
+        "name": "Ben Northway",
+        "email": "bnorthway@splunk.com",
+        "company": "Splunk"
+      }
+    ],
+    "releaseDate": null,
+    "description": "Amelia is an infamous explorer of Splunk knowledge!",
+    "classification": {
+      "intendedAudience": null,
+      "categories": [],
+      "developmentStatus": null
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": null,
+      "text": "./README.txt",
+      "uri": null
+    }
+  },
+  "dependencies": null,
+  "tasks": null,
+  "inputGroups": null,
+  "incompatibleApps": null,
+  "platformRequirements": null,
+  "supportedDeployments": [
+    "_standalone",
+    "_distributed",
+    "_search_head_clustering"
+  ],
+  "targetWorkloads": "_search_heads"
+}
