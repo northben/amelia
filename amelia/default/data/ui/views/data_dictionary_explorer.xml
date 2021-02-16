@@ -79,7 +79,14 @@
             | where if("$owner$"!="",owner=="$owner$",true())
             | convert ctime(*_event)
             | foreach * [ eval "&lt;&lt;FIELD&gt;&gt;"=mvdedup('&lt;&lt;FIELD&gt;&gt;') ]
-            | fields index sourcetype first_event last_event count *
+            
+            | join index [ | rest splunk_server=local /servicesNS/-/-/data/indexes 
+            | fields title frozenTimePeriodInSecs 
+            | rename title as index
+            | eval frozen_time_period_date=now()-frozenTimePeriodInSecs
+            | convert timeformat="%Y-%m-%d" ctime(frozen_time_period_date) ]
+            
+            | fields index sourcetype first_event last_event count owner security_related "business purpose" description cim_status frozenTimePeriodInSecs frozen_time_period_date *
             </query>
         </search>
         <option name="count">20</option>
