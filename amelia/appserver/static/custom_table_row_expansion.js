@@ -29,7 +29,7 @@ require([
             var indexCell = _(rowData.cells).find(function (cell) {
                return cell.field === 'index';
             });
-            this._searchManager.set({ search: `index=${indexCell.value} sourcetype=${sourcetypeCell.value} | dedup punct`});
+            this._searchManager.set({ search: `index=${indexCell.value} sourcetype=${sourcetypeCell.value} | dedup punct | head `});
             $container.append(this._chartView.render().el);
         }
     });
