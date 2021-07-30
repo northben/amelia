@@ -2,6 +2,15 @@
   <description>
     Display customizable metadata about Splunk indexes and sourcetypes.
   </description>
+  <search>
+    <query>
+      | makeresults 
+      | eval endpoint=if($env:is_cloud$, "/servicesNS/-/-/data/distributed-indexes", "/servicesNS/-/-/data/indexes")
+    </query>
+    <done>
+      <set token="indexes_endpoint">$result.endpoint$</set>
+    </done>
+  </search>
   <search id="base">
     <query>
       | tstats min(_time) as first_event max(_time) as last_event count where index=* by index sourcetype
@@ -83,7 +92,7 @@
             | convert ctime(*_event)
             | foreach * [ eval "&lt;&lt;FIELD&gt;&gt;"=mvdedup('&lt;&lt;FIELD&gt;&gt;') ]
 
-            | join index [ | rest splunk_server=local /servicesNS/-/-/data/distributed-indexes
+            | join index [ | rest splunk_server=local $indexes_endpoint$
             | fields title frozenTimePeriodInSecs
             | rename title as index
             | eval frozen_time_period_date=now()+frozenTimePeriodInSecs
