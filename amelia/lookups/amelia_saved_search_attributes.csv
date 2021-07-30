@@ -15,3 +15,4 @@ ES: other gen,"title=""*gen"" NOT title=""* - context gen"" NOT title=""* - look
 Any attribute,title=*
 ES: Threat Activity,action.threat_activity=*
 ES: RBA Risk Rule,"title=""* - RR - *"""
+MLTK: model gen,"title=""* - model gen"""
