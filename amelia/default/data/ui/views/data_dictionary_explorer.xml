@@ -7,6 +7,9 @@
       | tstats min(_time) as first_event max(_time) as last_event count where index=* by index sourcetype
       | search NOT index IN(assetsummary, cim_modactions, csvsummary, endpoint_summary, firedalerts, notable, risk, summary, threat_activity)
       | lookup amelia_data_dictionary_lookup index sourcetype
+      | addinfo
+      | eval events_per_day=round(86400*(count/(info_max_time-info_min_time)))
+      | fields - info_max_time info_min_time info_search_time info_sid
       | $filter$
     </query>
     <earliest>$field1.earliest$</earliest>
@@ -79,14 +82,14 @@
             | where if("$owner$"!="",owner=="$owner$",true())
             | convert ctime(*_event)
             | foreach * [ eval "&lt;&lt;FIELD&gt;&gt;"=mvdedup('&lt;&lt;FIELD&gt;&gt;') ]
-            
-            | join index [ | rest splunk_server=local /servicesNS/-/-/data/indexes 
-            | fields title frozenTimePeriodInSecs 
+
+            | join index [ | rest splunk_server=local /servicesNS/-/-/data/distributed-indexes
+            | fields title frozenTimePeriodInSecs
             | rename title as index
-            | eval frozen_time_period_date=now()-frozenTimePeriodInSecs
+            | eval frozen_time_period_date=now()+frozenTimePeriodInSecs
             | convert timeformat="%Y-%m-%d" ctime(frozen_time_period_date) ]
-            
-            | fields index sourcetype first_event last_event count owner security_related "business purpose" description cim_status frozenTimePeriodInSecs frozen_time_period_date *
+
+            | fields index sourcetype first_event last_event count events_per_day owner security_related "business purpose" description cim_status frozenTimePeriodInSecs frozen_time_period_date *
             </query>
         </search>
         <option name="count">20</option>
