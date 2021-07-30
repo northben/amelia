@@ -1,0 +1,332 @@
+<form>
+  <label>Search resource utilization</label>
+  <search id="base" ref="search resource utilization base">
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <search id="foo">
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+    <query>| makeresults | addinfo</query>
+    <done>
+      <set token="my_latest">$result.info_max_time$</set>
+      <set token="my_earliest">$result.info_min_time$</set>
+    </done>
+  </search>
+  <fieldset submitButton="true" autoRun="false">
+    <input type="time" token="time">
+      <label></label>
+      <default>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="provenance">
+      <label>Provenance</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <prefix>provenance="</prefix>
+      <suffix>"</suffix>
+      <fieldForLabel>provenance</fieldForLabel>
+      <fieldForValue>provenance</fieldForValue>
+      <search base="base">
+        <query>| stats count by provenance</query>
+      </search>
+    </input>
+    <input type="dropdown" token="app">
+      <label>App</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <prefix>app="</prefix>
+      <suffix>"</suffix>
+      <fieldForLabel>app</fieldForLabel>
+      <fieldForValue>app</fieldForValue>
+      <search base="base">
+        <query>| stats count by app</query>
+      </search>
+    </input>
+    <input type="dropdown" token="type">
+      <label>Type</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <prefix>type="</prefix>
+      <suffix>"</suffix>
+      <fieldForLabel>type</fieldForLabel>
+      <fieldForValue>type</fieldForValue>
+      <search base="base">
+        <query>| stats count by type</query>
+      </search>
+    </input>
+    <input type="radio" token="resource">
+      <label>Resource</label>
+      <choice value="max_elapsed">CPU time (max_elapsed)</choice>
+      <choice value="max_mem_used">Memory used (max_mem_used)</choice>
+      <initialValue>max_elapsed</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Top $resource$ by app and type</title>
+      <chart>
+        <title>$provenance$ and app: $app$ and type: $type$</title>
+        <search base="base">
+          <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
+          | search $provenance$ $app$ $type$
+| chart sum($resource$) by app type 
+| addtotals
+| sort - Total
+| fields - Total
+| head</query>
+        </search>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=%7C%20loadjob%20savedsearch%3D%22bnorthway%3Asearch%3Abens_workload_base%22%0A%7C%20search%20app%3D%22$click.value$%22%20%0A%0A%7C%20chart%20sum($resource$)%20by%20provenance%20type&amp;earliest=$time.earliest$&amp;latest=$time.latest$</link>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top $resource$ by app and provenance</title>
+      <chart>
+        <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
+        <search base="base">
+          <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
+            | search $provenance$ $app$ $type$
+            | chart sum($resource$) by provenance app 
+            | addtotals 
+            | sort - Total 
+            | fields - Total 
+            | head</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top $resource$ by provenance and type</title>
+      <chart>
+        <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
+        <search base="base">
+          <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
+            | search $provenance$ $app$ $type$
+            | chart sum($resource$) by provenance type 
+            | addtotals 
+            | sort - Total 
+            | fields - Total 
+            | head</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Timechart of $resource$ by provenance of search</title>
+      <chart>
+        <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
+        <search base="base">
+          <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
+            | search $provenance$ $app$ $type$ 
+            | chart sum($resource$) by _time provenance</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">500</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Timechart of $resource$ by provenance</title>
+      <chart>
+        <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
+        <search base="base">
+          <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
+            | search $provenance$ $app$ $type$
+| chart sum($resource$) by _time provenance</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">500</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>List of labels</title>
+      <input type="radio" token="run_list_of_labels">
+        <label>Run search</label>
+        <choice value="false">No</choice>
+        <choice value="true">Yes</choice>
+        <default>false</default>
+        <change>
+          <condition value="false">
+            <unset token="run_list_of_labels"></unset>
+          </condition>
+        </change>
+      </input>
+      <table depends="$run_list_of_labels$">
+        <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
+        <search>
+          <query>
+          index=_introspection sourcetype=splunk_resource_usage data.search_props.sid::* data.search_props.mode!=RT data.search_props.user!="splunk-system-user" 
+| eval elapsed = 'data.elapsed' 
+| eval mem_used = 'data.mem_used' 
+| eval sid = 'data.search_props.sid' 
+| eval app = 'data.search_props.app' 
+| eval type = 'data.search_props.type' 
+| eval mode = 'data.search_props.mode' 
+| eval user = 'data.search_props.user' 
+| eval role = 'data.search_props.role' 
+| eval label = 'data.search_props.label' 
+| eval label = if(isnull(label) AND match(sid, ".*_subsearch_.*"), "subsearch", label)
+| eval label = if(isnull(label) AND match(sid, ".*__(search\d+)_.*"), "dashboard panel", label)
+| eval label = if(isnull(label) AND match(label, ".*_ACCELERATE_.*"), "acceleration", label)
+| eval label = if(isnull(label) AND type=="ad-hoc","ad-hoc", label)
+| eval provenance = if(isnotnull('data.search_props.provenance'), 'data.search_props.provenance', 'data.search_props.role') 
+| eval search_head = case(isnotnull('data.search_props.search_head') AND 'data.search_props.role' == "peer", 'data.search_props.search_head', isnull('data.search_props.search_head') AND 'data.search_props.role' == "head", "_self", isnull('data.search_props.search_head') AND 'data.search_props.role' == "peer", "_unknown") 
+| fields _time label provenance type mode app role user elapsed mem_used search_head sid 
+| search $provenance$ $app$ $type$
+| stats count dc(user) earliest(_time) as _time values(label) values(provenance) values(type) values(mode) values(app) values(role) values(user) max(elapsed) max(mem_used) values(search_head) by sid 
+| rename values(*) as *, sum(*) as sum_*, max(*) as max_*
+| stats sparkline sum($resource$) sum(dc(user)) dc(sid) values(app) by label
+| sort - sum($resource$)
+          </query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>
