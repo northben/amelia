@@ -1,5 +1,5 @@
 <form>
-  <label>Search resource utilization</label>
+  <label>Search Resource Utilization</label>
   <search id="base" ref="search resource utilization base">
     <earliest>$time.earliest$</earliest>
     <latest>$time.latest$</latest>
@@ -72,7 +72,7 @@
         <search base="base">
           <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
           | search $provenance$ $app$ $type$
-| chart sum($resource$) by app type 
+| chart sum($resource$) by app type
 | addtotals
 | sort - Total
 | fields - Total
@@ -98,10 +98,10 @@
         <search base="base">
           <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
             | search $provenance$ $app$ $type$
-            | chart sum($resource$) by provenance app 
-            | addtotals 
-            | sort - Total 
-            | fields - Total 
+            | chart sum($resource$) by provenance app
+            | addtotals
+            | sort - Total
+            | fields - Total
             | head</query>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -147,10 +147,10 @@
         <search base="base">
           <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
             | search $provenance$ $app$ $type$
-            | chart sum($resource$) by provenance type 
-            | addtotals 
-            | sort - Total 
-            | fields - Total 
+            | chart sum($resource$) by provenance type
+            | addtotals
+            | sort - Total
+            | fields - Total
             | head</query>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -195,7 +195,7 @@
         <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
         <search base="base">
           <query>| where _time&gt;$my_earliest$ AND _time&lt;$my_latest$
-            | search $provenance$ $app$ $type$ 
+            | search $provenance$ $app$ $type$
             | chart sum($resource$) by _time provenance</query>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -298,25 +298,25 @@
         <title>provenance: $provenance$ and app: $app$ and type: $type$</title>
         <search>
           <query>
-          index=_introspection sourcetype=splunk_resource_usage data.search_props.sid::* data.search_props.mode!=RT data.search_props.user!="splunk-system-user" 
-| eval elapsed = 'data.elapsed' 
-| eval mem_used = 'data.mem_used' 
-| eval sid = 'data.search_props.sid' 
-| eval app = 'data.search_props.app' 
-| eval type = 'data.search_props.type' 
-| eval mode = 'data.search_props.mode' 
-| eval user = 'data.search_props.user' 
-| eval role = 'data.search_props.role' 
-| eval label = 'data.search_props.label' 
+          index=_introspection sourcetype=splunk_resource_usage data.search_props.sid::* data.search_props.mode!=RT data.search_props.user!="splunk-system-user"
+| eval elapsed = 'data.elapsed'
+| eval mem_used = 'data.mem_used'
+| eval sid = 'data.search_props.sid'
+| eval app = 'data.search_props.app'
+| eval type = 'data.search_props.type'
+| eval mode = 'data.search_props.mode'
+| eval user = 'data.search_props.user'
+| eval role = 'data.search_props.role'
+| eval label = 'data.search_props.label'
 | eval label = if(isnull(label) AND match(sid, ".*_subsearch_.*"), "subsearch", label)
 | eval label = if(isnull(label) AND match(sid, ".*__(search\d+)_.*"), "dashboard panel", label)
 | eval label = if(isnull(label) AND match(label, ".*_ACCELERATE_.*"), "acceleration", label)
 | eval label = if(isnull(label) AND type=="ad-hoc","ad-hoc", label)
-| eval provenance = if(isnotnull('data.search_props.provenance'), 'data.search_props.provenance', 'data.search_props.role') 
-| eval search_head = case(isnotnull('data.search_props.search_head') AND 'data.search_props.role' == "peer", 'data.search_props.search_head', isnull('data.search_props.search_head') AND 'data.search_props.role' == "head", "_self", isnull('data.search_props.search_head') AND 'data.search_props.role' == "peer", "_unknown") 
-| fields _time label provenance type mode app role user elapsed mem_used search_head sid 
+| eval provenance = if(isnotnull('data.search_props.provenance'), 'data.search_props.provenance', 'data.search_props.role')
+| eval search_head = case(isnotnull('data.search_props.search_head') AND 'data.search_props.role' == "peer", 'data.search_props.search_head', isnull('data.search_props.search_head') AND 'data.search_props.role' == "head", "_self", isnull('data.search_props.search_head') AND 'data.search_props.role' == "peer", "_unknown")
+| fields _time label provenance type mode app role user elapsed mem_used search_head sid
 | search $provenance$ $app$ $type$
-| stats count dc(user) earliest(_time) as _time values(label) values(provenance) values(type) values(mode) values(app) values(role) values(user) max(elapsed) max(mem_used) values(search_head) by sid 
+| stats count dc(user) earliest(_time) as _time values(label) values(provenance) values(type) values(mode) values(app) values(role) values(user) max(elapsed) max(mem_used) values(search_head) by sid
 | rename values(*) as *, sum(*) as sum_*, max(*) as max_*
 | stats sparkline sum($resource$) sum(dc(user)) dc(sid) values(app) by label
 | sort - sum($resource$)
