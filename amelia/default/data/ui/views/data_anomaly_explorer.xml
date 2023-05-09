@@ -1,4 +1,4 @@
-<form>
+<form version="1.1">
   <label>Data Anomaly Explorer</label>
   <description>Identify statistical anomalies in any index/sourcetype. Data custodians use this dashboard to verify events are being indexed consistently, and create alerts when anomalies occur.</description>
   <search id="index_sourcetype">

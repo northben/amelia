@@ -1,4 +1,4 @@
-<form script="tabs.js,togglepanel/wrapper.js" stylesheet="tabs.css">
+<form script="tabs.js,togglepanel/wrapper.js" stylesheet="tabs.css" version="1.1">
   <search id="selection_base">
     <query>| rest splunk_server=local /servicesNS/-/-/saved/sourcetypes/
 | fields - EVAL* EXTRACT* FIELDALIAS* LOOKUP* REPORT* SEDCMD* TRANSFORMS* SEGMENTATION*
