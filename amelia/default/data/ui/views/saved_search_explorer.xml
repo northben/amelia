@@ -1,4 +1,4 @@
-<form script="edit_search.js,togglepanel/wrapper.js" version="1.1">
+<form script="togglepanel/wrapper.js" version="1.1">
   <label>Saved Search Explorer</label>
   <description>List, filter, and quantify saved searches along with metadata for each search. Additionally, toggle any search to be enabled/disabled.</description>
   <search id="base">
@@ -106,7 +106,7 @@
       <title>Saved Search List</title>
       <table id="searchTable">
         <search base="base">
-          <query>| $fieldz$ id | eval edit=mvappend("disable","enable")</query>
+          <query>| $fieldz$ id</query>
           <progress>
             <set token="the_query">$job.search$</set>
           </progress>
